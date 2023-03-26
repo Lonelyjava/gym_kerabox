@@ -1,4 +1,4 @@
-package com.gym.kerabox.gym_kerabox;
+package com.gym.kerabox;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
