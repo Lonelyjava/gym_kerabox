@@ -5,5 +5,7 @@ import com.gym.kerabox.entity.UserEntity;
 
 public interface UserService {
 	public UserEntity saveUser(UserDto userDto);
+	
+	public void saveEmp();
 
 }

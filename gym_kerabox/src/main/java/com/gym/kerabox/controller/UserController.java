@@ -39,4 +39,10 @@ public class UserController {
 
 		return new ResponseEntity<>(apiResponse, HttpStatus.OK);
 	}
+	
+	@PostMapping("/saveEmp")
+	public ResponseEntity<?> saveEmp(){
+		userService.saveEmp();
+		return new ResponseEntity<>("",HttpStatus.OK);
+	}
 }

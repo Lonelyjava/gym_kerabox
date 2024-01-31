@@ -1,15 +1,17 @@
 package com.gym.kerabox.serviceImpl;
 
-import com.gym.kerabox.dto.UserDto;
-import com.gym.kerabox.entity.AddressEntity;
-import com.gym.kerabox.entity.UserEntity;
-import com.gym.kerabox.reposistory.UserReposistory;
-import com.gym.kerabox.service.UserService;
-
 import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.gym.kerabox.dto.UserDto;
+import com.gym.kerabox.entity.AddressEntity;
+import com.gym.kerabox.entity.Employee;
+import com.gym.kerabox.entity.UserEntity;
+import com.gym.kerabox.reposistory.EmployeeReposistory;
+import com.gym.kerabox.reposistory.UserReposistory;
+import com.gym.kerabox.service.UserService;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -17,8 +19,11 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	UserReposistory userReposistory;
 
+	@Autowired
+	EmployeeReposistory employeeReposistory;
+
 	@Override
-	public UserEntity saveUser(UserDto userDto)  {
+	public UserEntity saveUser(UserDto userDto) {
 		UserEntity userEntity = new UserEntity();
 		AddressEntity addressEntity = new AddressEntity();
 		userEntity.setFirstname(userDto.getFirstname());
@@ -41,5 +46,18 @@ public class UserServiceImpl implements UserService {
 		userReposistory.save(userEntity);
 		System.out.println("data save successfully.");
 		return userEntity;
+	}
+
+	@Override
+	public void saveEmp() {
+		for(int i=0;i<10;i++) {
+		Employee employee = new Employee();
+		employee.setCompany("tekmindz"+i);
+		employee.setDept("CSE"+i);
+		employee.setName("Kundan"+i);
+		employee.setSalary(5000+i);
+		employeeReposistory.save(employee);
+		System.out.println("saved emp details");
+		}
 	}
 }

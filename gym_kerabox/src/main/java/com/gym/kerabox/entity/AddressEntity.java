@@ -1,5 +1,7 @@
 package com.gym.kerabox.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -16,6 +18,7 @@ public class AddressEntity extends BaseEntity{
     private int pincode;
 
     @OneToOne(mappedBy = "address")
+    @JsonIgnore
     private  UserEntity userEntity;
 
     public String getAddress1() {
