@@ -1,19 +1,15 @@
 package com.gym.kerabox.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.gym.kerabox.dto.UserDto;
 import com.gym.kerabox.entity.UserEntity;
 import com.gym.kerabox.response.ApiResponse;
 import com.gym.kerabox.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
 
 @RestController
 @RequestMapping("gym_kerabox")
@@ -44,5 +40,21 @@ public class UserController {
 	public ResponseEntity<?> saveEmp(){
 		userService.saveEmp();
 		return new ResponseEntity<>("",HttpStatus.OK);
+	}
+
+	@GetMapping("/getUser")
+	public ResponseEntity<?> getUser(){
+		ApiResponse apiResponse = new ApiResponse();
+		try {
+			List<UserEntity> getUser = userService.getUser();
+			apiResponse.setResponseCode(200);
+			apiResponse.setMessage("Get All User successfully.");
+			apiResponse.setErrorMessage(false);
+			apiResponse.setData(getUser);
+		} catch (Exception e) {
+//			log.info("Service method called using @Slf4j"); kundan kumar
+			e.printStackTrace();
+		}
+		return new ResponseEntity<>(apiResponse,HttpStatus.OK);
 	}
 }
