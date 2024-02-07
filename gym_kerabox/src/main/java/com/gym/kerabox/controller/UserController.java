@@ -33,7 +33,7 @@ public class UserController {
 			apiResponse.setErrorMessage(false);
 			apiResponse.setData(saveUser);
 		} catch (Exception e) {
-//			log.info("Service method called using @Slf4j");
+//			log.info("Service method called using @Slf4j"); kundan kumar
 			e.printStackTrace();
 		}
 
