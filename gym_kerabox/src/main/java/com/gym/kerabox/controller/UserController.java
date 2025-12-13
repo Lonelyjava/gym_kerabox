@@ -35,15 +35,15 @@ public class UserController {
 
 		return new ResponseEntity<>(apiResponse, HttpStatus.OK);
 	}
-	
+
 	@PostMapping("/saveEmp")
-	public ResponseEntity<?> saveEmp(){
+	public ResponseEntity<?> saveEmp() {
 		userService.saveEmp();
-		return new ResponseEntity<>("",HttpStatus.OK);
+		return new ResponseEntity<>("", HttpStatus.OK);
 	}
 
 	@GetMapping("/getUser")
-	public ResponseEntity<?> getUser(){
+	public ResponseEntity<?> getUser() {
 		ApiResponse apiResponse = new ApiResponse();
 		try {
 			List<UserEntity> getUser = userService.getUser();
@@ -55,6 +55,6 @@ public class UserController {
 //			log.info("Service method called using @Slf4j"); kundan kumar
 			e.printStackTrace();
 		}
-		return new ResponseEntity<>(apiResponse,HttpStatus.OK);
+		return new ResponseEntity<>(apiResponse, HttpStatus.OK);
 	}
 }
