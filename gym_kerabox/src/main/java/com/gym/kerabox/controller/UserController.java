@@ -1,25 +1,31 @@
 package com.gym.kerabox.controller;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.gym.kerabox.constant.UserConstant;
 import com.gym.kerabox.dto.UserDto;
 import com.gym.kerabox.entity.UserEntity;
 import com.gym.kerabox.response.ApiResponse;
 import com.gym.kerabox.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
-@RequestMapping("gym_kerabox")
+@RequestMapping(UserConstant.GYM_KERABOX)
 //@Slf4j
 public class UserController {
 
 	@Autowired
 	UserService userService;
 
-	@PostMapping("/saveUser")
+	@PostMapping(UserConstant.SAVE_USER)
 	public ResponseEntity<?> saveUserDetails(@RequestBody UserDto userDto) {
 		ApiResponse apiResponse = new ApiResponse();
 		try {
