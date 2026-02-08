@@ -48,11 +48,44 @@ public class UserController {
 		return new ResponseEntity<>("", HttpStatus.OK);
 	}
 
-	@GetMapping("/getUser")
+	@GetMapping(UserConstant.GET_USER)
 	public ResponseEntity<?> getUser() {
 		ApiResponse apiResponse = new ApiResponse();
 		try {
 			List<UserEntity> getUser = userService.getUser();
+			apiResponse.setResponseCode(200);
+			apiResponse.setCount(getUser.size());
+			apiResponse.setMessage("Get All User successfully.");
+			apiResponse.setErrorMessage(false);
+			apiResponse.setData(getUser);
+		} catch (Exception e) {
+//			log.info("Service method called using @Slf4j"); kundan kumar
+			e.printStackTrace();
+		}
+		return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+	}
+	
+	@GetMapping(UserConstant.SEARCH_USER)
+	public ResponseEntity<?> searchUser() {
+		ApiResponse apiResponse = new ApiResponse();
+		try {
+			List<UserEntity> getUser = userService.searchUser();
+			apiResponse.setResponseCode(200);
+			apiResponse.setMessage("Get All User successfully.");
+			apiResponse.setErrorMessage(false);
+			apiResponse.setData(getUser);
+		} catch (Exception e) {
+//			log.info("Service method called using @Slf4j"); kundan kumar
+			e.printStackTrace();
+		}
+		return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+	}
+	
+	@GetMapping(UserConstant.DELETE_USER)
+	public ResponseEntity<?> deleteUser() {
+		ApiResponse apiResponse = new ApiResponse();
+		try {
+			List<UserEntity> getUser = userService.deleteUser();
 			apiResponse.setResponseCode(200);
 			apiResponse.setMessage("Get All User successfully.");
 			apiResponse.setErrorMessage(false);

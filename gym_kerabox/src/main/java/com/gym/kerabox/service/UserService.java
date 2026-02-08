@@ -11,4 +11,8 @@ public interface UserService {
 	public void saveEmp();
 
 	public List<UserEntity> getUser();
+
+	public List<UserEntity> searchUser();
+
+	public List<UserEntity> deleteUser();
 }

@@ -66,4 +66,16 @@ public class UserServiceImpl implements UserService {
 	public List<UserEntity> getUser() {
 		return userReposistory.findAll();
 	}
+
+	@Override
+	public List<UserEntity> searchUser() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<UserEntity> deleteUser() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
