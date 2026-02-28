@@ -78,4 +78,10 @@ public class UserServiceImpl implements UserService {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public Long getUsetCount() {
+		// TODO Auto-generated method stub
+		return userReposistory.count();
+	}
 }

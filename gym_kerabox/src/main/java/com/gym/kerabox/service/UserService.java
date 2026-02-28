@@ -15,4 +15,6 @@ public interface UserService {
 	public List<UserEntity> searchUser();
 
 	public List<UserEntity> deleteUser();
+
+	public Long getUsetCount();
 }
