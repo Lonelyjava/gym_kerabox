@@ -17,6 +17,8 @@ public class UserEntity  extends  BaseEntity{
     private String lastname;
     private String email;
     private String mobile;
+    private String gender;
+    private String status = "false";
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id", referencedColumnName = "id")
@@ -78,14 +80,28 @@ public class UserEntity  extends  BaseEntity{
         this.address = address;
     }
 
-    @Override
-    public String toString() {
-        return "UserEntity{" +
-                "firstname='" + firstname + '\'' +
-                ", lastname='" + lastname + '\'' +
-                ", email='" + email + '\'' +
-                ", mobile='" + mobile + '\'' +
-                ", address=" + address +
-                '}';
-    }
+    public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	@Override
+	public String toString() {
+		return "UserEntity [firstname=" + firstname + ", lastname=" + lastname + ", email=" + email + ", mobile="
+				+ mobile + ", gender=" + gender + ", status=" + status + ", address=" + address + "]";
+	}
+    
 }

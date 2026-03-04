@@ -23,8 +23,12 @@ import com.gym.kerabox.exceptionhandler.UserAlreadyExistsException;
 import com.gym.kerabox.response.ApiResponse;
 import com.gym.kerabox.service.UserService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping(UserConstant.GYM_KERABOX)
+@Tag(name = "User Controller", description = "User management APIs")
 //@Slf4j
 public class UserController {
 
@@ -32,6 +36,7 @@ public class UserController {
 	UserService userService;
 
 	@PostMapping(UserConstant.SAVE_USER)
+	@Operation(summary = "Create new user")
 	public ResponseEntity<?> saveUserDetails(@RequestBody UserDto userDto) {
 		ApiResponse apiResponse = new ApiResponse();
 		try {

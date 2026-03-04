@@ -30,6 +30,8 @@ public class UserServiceImpl implements UserService {
 		userEntity.setFirstname(userDto.getFirstname());
 		userEntity.setLastname(userDto.getLastname());
 		userEntity.setEmail(userDto.getEmail());
+		userEntity.setGender(userDto.getGender());
+		userEntity.setStatus(userDto.getStatus());
 		userEntity.setMobile(userDto.getMobile());
 		userEntity.setCreatedBy(LocalDate.now());
 		userEntity.setLoggedInBy("kundan");
@@ -51,14 +53,14 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void saveEmp() {
-		for(int i=0;i<10;i++) {
-		Employee employee = new Employee();
-		employee.setCompany("tekmindz"+i);
-		employee.setDept("CSE"+i);
-		employee.setName("Kundan"+i);
-		employee.setSalary(5000+i);
-		employeeReposistory.save(employee);
-		System.out.println("saved emp details");
+		for (int i = 0; i < 10; i++) {
+			Employee employee = new Employee();
+			employee.setCompany("tekmindz" + i);
+			employee.setDept("CSE" + i);
+			employee.setName("Kundan" + i);
+			employee.setSalary(5000 + i);
+			employeeReposistory.save(employee);
+			System.out.println("saved emp details");
 		}
 	}
 
@@ -88,8 +90,8 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public UserEntity checkedUserAlreadyExist(String mobile, String email) {
 		// TODO Auto-generated method stub
-		
-		UserEntity checkedUser=userReposistory.checkUserAlreadyExist(mobile,email);
+
+		UserEntity checkedUser = userReposistory.checkUserAlreadyExist(mobile, email);
 		return checkedUser;
 	}
 }
