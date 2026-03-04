@@ -17,4 +17,6 @@ public interface UserService {
 	public List<UserEntity> deleteUser();
 
 	public Long getUsetCount();
+
+	public UserEntity checkedUserAlreadyExist(String mobile, String email);
 }

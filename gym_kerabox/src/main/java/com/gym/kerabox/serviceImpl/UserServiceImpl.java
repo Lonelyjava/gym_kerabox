@@ -84,4 +84,12 @@ public class UserServiceImpl implements UserService {
 		// TODO Auto-generated method stub
 		return userReposistory.count();
 	}
+
+	@Override
+	public UserEntity checkedUserAlreadyExist(String mobile, String email) {
+		// TODO Auto-generated method stub
+		
+		UserEntity checkedUser=userReposistory.checkUserAlreadyExist(mobile,email);
+		return checkedUser;
+	}
 }

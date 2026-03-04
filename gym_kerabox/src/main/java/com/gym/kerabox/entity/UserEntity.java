@@ -22,9 +22,23 @@ public class UserEntity  extends  BaseEntity{
     @JoinColumn(name = "address_id", referencedColumnName = "id")
     @JsonIgnore
     private AddressEntity address;
+    
+    
+    
 
 
-    public String getFirstname() {
+    public UserEntity() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public UserEntity(String email, String mobile) {
+		super();
+		this.email = email;
+		this.mobile = mobile;
+	}
+
+	public String getFirstname() {
         return firstname;
     }
 

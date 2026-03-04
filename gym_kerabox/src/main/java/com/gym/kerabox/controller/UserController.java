@@ -35,19 +35,29 @@ public class UserController {
 	public ResponseEntity<?> saveUserDetails(@RequestBody UserDto userDto) {
 		ApiResponse apiResponse = new ApiResponse();
 		try {
-			UserEntity saveUser = userService.saveUser(userDto);
-			Long countUser = userService.getUsetCount();
-			apiResponse.setCount(countUser);
-			apiResponse.setResponseCode(200);
-			apiResponse.setMessage("Data saved successfully.");
-			apiResponse.setErrorMessage(false);
-			apiResponse.setData(saveUser);
+			UserEntity checkedUser = userService.checkedUserAlreadyExist(userDto.getMobile(), userDto.getEmail());
+			if (checkedUser != null) {
+				System.out.println(checkedUser.getMobile() + "" + checkedUser.getEmail());
+//				apiResponse.setCount(countUser);
+				apiResponse.setResponseCode(200);
+				apiResponse.setMessage("dupliate data not allowed.");
+//				apiResponse.setErrorMessage(false);
+				apiResponse.setData(new UserEntity(checkedUser.getMobile(), checkedUser.getEmail()));
+				return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+			} else {
+				UserEntity saveUser = userService.saveUser(userDto);
+				Long countUser = userService.getUsetCount();
+				apiResponse.setCount(countUser);
+				apiResponse.setResponseCode(200);
+				apiResponse.setMessage("Data saved successfully.");
+				apiResponse.setErrorMessage(false);
+				apiResponse.setData(saveUser);
+			}
+
 		} catch (Exception e) {
 //			log.info("Service method called using @Slf4j"); kundan kumar
 			e.printStackTrace();
 		}
-		
-		
 
 		return new ResponseEntity<>(apiResponse, HttpStatus.OK);
 	}
@@ -74,7 +84,7 @@ public class UserController {
 		}
 		return new ResponseEntity<>(apiResponse, HttpStatus.OK);
 	}
-	
+
 	@GetMapping(UserConstant.SEARCH_USER)
 	public ResponseEntity<?> searchUser() {
 		ApiResponse apiResponse = new ApiResponse();
@@ -90,7 +100,7 @@ public class UserController {
 		}
 		return new ResponseEntity<>(apiResponse, HttpStatus.OK);
 	}
-	
+
 	@GetMapping(UserConstant.DELETE_USER)
 	public ResponseEntity<?> deleteUser() {
 		ApiResponse apiResponse = new ApiResponse();
@@ -106,23 +116,22 @@ public class UserController {
 		}
 		return new ResponseEntity<>(apiResponse, HttpStatus.OK);
 	}
-	
-	
-	  @ExceptionHandler(value = NoSuchUserExistsException.class)
-	    @ResponseStatus(HttpStatus.NOT_FOUND)
-	    public ErrorResponse handleNoSuchUserExistsException(NoSuchUserExistsException ex) {
-	        return new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
-	    }
 
-	    @ExceptionHandler(value = NoSuchElementException.class)
-	    @ResponseStatus(HttpStatus.NOT_FOUND)
-	    public ErrorResponse handleNoSuchElementException(NoSuchElementException ex) {
-	        return new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
-	    }
-	    
-	    @ExceptionHandler(value = UserAlreadyExistsException.class)
-	    @ResponseStatus(HttpStatus.CONFLICT)
-	    public ErrorResponse handleCustomerAlreadyExistsException(UserAlreadyExistsException ex) {
-	        return new ErrorResponse(HttpStatus.CONFLICT.value(), ex.getMessage());
-	    }
+	@ExceptionHandler(value = NoSuchUserExistsException.class)
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	public ErrorResponse handleNoSuchUserExistsException(NoSuchUserExistsException ex) {
+		return new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
+	}
+
+	@ExceptionHandler(value = NoSuchElementException.class)
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	public ErrorResponse handleNoSuchElementException(NoSuchElementException ex) {
+		return new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
+	}
+
+	@ExceptionHandler(value = UserAlreadyExistsException.class)
+	@ResponseStatus(HttpStatus.CONFLICT)
+	public ErrorResponse handleCustomerAlreadyExistsException(UserAlreadyExistsException ex) {
+		return new ErrorResponse(HttpStatus.CONFLICT.value(), ex.getMessage());
+	}
 }
