@@ -1,11 +1,20 @@
 package com.gym.kerabox.serviceImpl;
 
+/**
+ * UserController class for managing users.
+ *
+ * @author Kundan Kumar
+ * @version 1.0
+ * @since 2026-03-17
+ */
 import java.time.LocalDate;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.gym.kerabox.controller.UserController;
 import com.gym.kerabox.dto.UserDto;
 import com.gym.kerabox.entity.AddressEntity;
 import com.gym.kerabox.entity.Employee;
@@ -17,6 +26,7 @@ import com.gym.kerabox.service.UserService;
 @Service
 public class UserServiceImpl implements UserService {
 
+	private static final Logger logger = Logger.getLogger(UserController.class.getName());
 	@Autowired
 	UserReposistory userReposistory;
 
@@ -93,5 +103,35 @@ public class UserServiceImpl implements UserService {
 
 		UserEntity checkedUser = userReposistory.checkUserAlreadyExist(mobile, email);
 		return checkedUser;
+	}
+
+	@Override
+	public UserDto updateUser(UserDto userDto) {
+		if (userDto != null) {
+			UserEntity userEntity = userReposistory.findById(userDto.getId())
+					.orElseThrow(() -> new RuntimeException("User not found with id :" + userDto.getId()));
+			userEntity.setFirstname(userDto.getFirstname());
+			userEntity.setLastname(userDto.getLastname());
+			userEntity.setEmail(userDto.getEmail());
+			userEntity.setMobile(userDto.getMobile());
+			userEntity.setGender(userDto.getGender());
+			userEntity.setStatus(userDto.getStatus());
+			userEntity.setUpdatedBy(LocalDate.now());
+			userEntity.setLoggedInBy("kundan");
+			AddressEntity addressEntity = new AddressEntity();
+			addressEntity.setAddress1(userDto.getAddress1());
+			addressEntity.setAddress2(userDto.getAddress2());
+			addressEntity.setDistric(userDto.getDistric());
+			addressEntity.setPincode(userDto.getPincode());
+			addressEntity.setState(userDto.getState());
+			addressEntity.setCreatedBy(LocalDate.now());
+			addressEntity.setLoggedInBy("kundan");
+			addressEntity.setUpdatedBy(LocalDate.now());
+			userEntity.setAddress(addressEntity);
+			userReposistory.save(userEntity);
+			logger.info("update user successfully @updateUser");
+
+		}
+		return userDto;
 	}
 }

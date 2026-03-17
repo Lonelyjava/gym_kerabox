@@ -1,5 +1,11 @@
 package com.gym.kerabox.exceptionhandler;
-
+/**
+ * UserController class for managing users.
+ *
+ * @author Kundan Kumar
+ * @version 1.0
+ * @since 2026-03-17
+ */
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

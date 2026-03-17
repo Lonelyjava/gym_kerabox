@@ -1,11 +1,18 @@
 package com.gym.kerabox.constant;
-//kundan
+/**
+ * UserConstant class for managing users.
+ *
+ * @author Kundan Kumar
+ * @version 1.0
+ * @since 2026-03-17
+ */
 public class UserConstant {
 
 	public static final String GYM_KERABOX = "gym_kerabox";
 	public static final String SAVE_USER = "/saveUser";
-	public static final String GET_USER = "/getUser";
+	public static final String UPDATE_USER = "/updateUser";
 	public static final String SEARCH_USER = "/searchUser";
 	public static final String DELETE_USER = "/deleteUser";
+	public static final String GET_ALL_USER = "/getAllUser";
 
 }

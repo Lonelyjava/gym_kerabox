@@ -1,6 +1,15 @@
 package com.gym.kerabox.dto;
 
+/**
+ * UserController class for managing users.
+ *
+ * @author Kundan Kumar
+ * @version 1.0
+ * @since 2026-03-17
+ */
 public class UserDto {
+	
+	private long id;
 	private String firstname;
 	private String lastname;
 	private String email;
@@ -12,6 +21,14 @@ public class UserDto {
 	private int pincode;
 	private String gender;
 	private String status;
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
 
 	public String getFirstname() {
 		return firstname;
@@ -100,7 +117,5 @@ public class UserDto {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-
-	
 
 }

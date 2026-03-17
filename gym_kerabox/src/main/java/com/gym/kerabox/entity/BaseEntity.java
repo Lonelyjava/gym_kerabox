@@ -1,5 +1,11 @@
 package com.gym.kerabox.entity;
-
+/**
+ * UserController class for managing users.
+ *
+ * @author Kundan Kumar
+ * @version 1.0
+ * @since 2026-03-17
+ */
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;

@@ -1,5 +1,11 @@
 package com.gym.kerabox;
-
+/**
+ * UserController class for managing users.
+ *
+ * @author Kundan Kumar
+ * @version 1.0
+ * @since 2026-03-17
+ */
 /*Developer : Kundan Kumar
  * date : 14-12-2025
  * Project - Gym Management

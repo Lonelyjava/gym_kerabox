@@ -1,5 +1,11 @@
 package com.gym.kerabox.service;
-
+/**
+ * UserController class for managing users.
+ *
+ * @author Kundan Kumar
+ * @version 1.0
+ * @since 2026-03-17
+ */
 import com.gym.kerabox.dto.UserDto;
 import com.gym.kerabox.entity.UserEntity;
 
@@ -19,4 +25,6 @@ public interface UserService {
 	public Long getUsetCount();
 
 	public UserEntity checkedUserAlreadyExist(String mobile, String email);
+
+	public UserDto updateUser(UserDto userDto);
 }

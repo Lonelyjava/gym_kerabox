@@ -1,16 +1,27 @@
 package com.gym.kerabox.controller;
-
+/**
+ * UserController class for managing users.
+ *
+ * @author Kundan Kumar
+ * @version 1.0
+ * @since 2026-03-17
+ */
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -32,6 +43,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 //@Slf4j
 public class UserController {
 
+	private static final Logger logger = Logger.getLogger(UserController.class.getName());
+	
 	@Autowired
 	UserService userService;
 
@@ -42,7 +55,6 @@ public class UserController {
 		try {
 			UserEntity checkedUser = userService.checkedUserAlreadyExist(userDto.getMobile(), userDto.getEmail());
 			if (checkedUser != null) {
-				System.out.println(checkedUser.getMobile() + "" + checkedUser.getEmail());
 //				apiResponse.setCount(countUser);
 				apiResponse.setResponseCode(200);
 				apiResponse.setMessage("dupliate data not allowed.");
@@ -60,21 +72,15 @@ public class UserController {
 			}
 
 		} catch (Exception e) {
-//			log.info("Service method called using @Slf4j"); kundan kumar
+			logger.info("Service method called using @SAVE_USER"+e.getMessage()); 
 			e.printStackTrace();
 		}
 
 		return new ResponseEntity<>(apiResponse, HttpStatus.OK);
 	}
 
-	@PostMapping("/saveEmp")
-	public ResponseEntity<?> saveEmp() {
-		userService.saveEmp();
-		return new ResponseEntity<>("", HttpStatus.OK);
-	}
-
-	@GetMapping(UserConstant.GET_USER)
-	public ResponseEntity<?> getUser() {
+	@GetMapping(UserConstant.GET_ALL_USER)
+	public ResponseEntity<?> getAllUsers() {
 		ApiResponse apiResponse = new ApiResponse();
 		try {
 			List<UserEntity> getUser = userService.getUser();
@@ -84,7 +90,24 @@ public class UserController {
 			apiResponse.setErrorMessage(false);
 			apiResponse.setData(getUser);
 		} catch (Exception e) {
-//			log.info("Service method called using @Slf4j"); kundan kumar
+			logger.info("Service method called using @GET_ALL_USER"+e.getMessage());
+			e.printStackTrace();
+		}
+		return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+	}
+
+	@PutMapping(UserConstant.UPDATE_USER)
+	public ResponseEntity<?> getUser(@RequestBody UserDto userDto ) {
+		ApiResponse apiResponse = new ApiResponse();
+		try {
+			UserDto getUser = userService.updateUser(userDto);
+			apiResponse.setResponseCode(200);
+			apiResponse.setCount(getUser.getId());
+			apiResponse.setMessage("Update User successfully.");
+			apiResponse.setErrorMessage(false);
+			apiResponse.setData(getUser);
+		} catch (Exception e) {
+			logger.info("Service method called using @UPDATE_USER"+e.getMessage());
 			e.printStackTrace();
 		}
 		return new ResponseEntity<>(apiResponse, HttpStatus.OK);
@@ -100,13 +123,13 @@ public class UserController {
 			apiResponse.setErrorMessage(false);
 			apiResponse.setData(getUser);
 		} catch (Exception e) {
-//			log.info("Service method called using @Slf4j"); kundan kumar
+			logger.info("Service method called using @SEARCH_USER"+e.getMessage()); 
 			e.printStackTrace();
 		}
 		return new ResponseEntity<>(apiResponse, HttpStatus.OK);
 	}
 
-	@GetMapping(UserConstant.DELETE_USER)
+	@DeleteMapping(UserConstant.DELETE_USER)
 	public ResponseEntity<?> deleteUser() {
 		ApiResponse apiResponse = new ApiResponse();
 		try {
@@ -116,7 +139,7 @@ public class UserController {
 			apiResponse.setErrorMessage(false);
 			apiResponse.setData(getUser);
 		} catch (Exception e) {
-//			log.info("Service method called using @Slf4j"); kundan kumar
+			logger.info("Service method called using @SEARCH_USER"+e.getMessage()); 
 			e.printStackTrace();
 		}
 		return new ResponseEntity<>(apiResponse, HttpStatus.OK);

@@ -1,5 +1,11 @@
 package com.gym.kerabox.entity;
-
+/**
+ * UserController class for managing users.
+ *
+ * @author Kundan Kumar
+ * @version 1.0
+ * @since 2026-03-17
+ */
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
@@ -22,7 +28,7 @@ public class UserEntity  extends  BaseEntity{
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id", referencedColumnName = "id")
-    @JsonIgnore
+//    @JsonIgnore
     private AddressEntity address;
     
     
