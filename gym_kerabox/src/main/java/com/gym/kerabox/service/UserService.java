@@ -1,4 +1,5 @@
 package com.gym.kerabox.service;
+import com.gym.kerabox.dto.SearchUserDto;
 /**
  * UserController class for managing users.
  *
@@ -18,7 +19,7 @@ public interface UserService {
 
 	public List<UserEntity> getUser();
 
-	public List<UserEntity> searchUser();
+	public List<UserEntity> searchUser(SearchUserDto searchUserDto);
 
 	public List<UserEntity> deleteUser();
 

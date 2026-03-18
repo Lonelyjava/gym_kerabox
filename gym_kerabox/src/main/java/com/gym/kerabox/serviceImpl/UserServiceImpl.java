@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.gym.kerabox.controller.UserController;
+import com.gym.kerabox.dto.SearchUserDto;
 import com.gym.kerabox.dto.UserDto;
 import com.gym.kerabox.entity.AddressEntity;
 import com.gym.kerabox.entity.Employee;
@@ -80,9 +81,18 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<UserEntity> searchUser() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<UserEntity> searchUser(SearchUserDto searchUserDto) {
+		List<UserEntity> userList = null;
+		if (searchUserDto.getFirstname() != null || searchUserDto.getMobile() != null
+				|| searchUserDto.getEmail() != null) {
+			userList = userReposistory.searchUserByFirstnameOrMobileOrEmail(searchUserDto.getFirstname(),
+					searchUserDto.getMobile(), searchUserDto.getEmail());
+		} else {
+
+			throw new RuntimeException(
+					"Please provide at least one search criteria (firstname,mobile,email) to search for users");
+		}
+		return userList;
 	}
 
 	@Override

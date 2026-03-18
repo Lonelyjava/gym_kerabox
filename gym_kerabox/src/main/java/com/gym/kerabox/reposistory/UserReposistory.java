@@ -1,4 +1,6 @@
 package com.gym.kerabox.reposistory;
+import java.util.List;
+
 /**
  * UserController class for managing users.
  *
@@ -18,4 +20,6 @@ public interface UserReposistory extends JpaRepository<UserEntity,Long> {
 
 	@Query("select u from UserEntity u where u.mobile=:mobile or u.email=:email")
 	public UserEntity checkUserAlreadyExist(@Param("mobile")String mobile,@Param("email") String email);
+
+	public List<UserEntity> searchUserByFirstnameOrMobileOrEmail(String firstname, String mobile, String email);
 }

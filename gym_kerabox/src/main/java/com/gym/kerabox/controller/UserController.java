@@ -16,16 +16,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gym.kerabox.constant.UserConstant;
+import com.gym.kerabox.dto.SearchUserDto;
 import com.gym.kerabox.dto.UserDto;
 import com.gym.kerabox.entity.UserEntity;
 import com.gym.kerabox.exceptionhandler.ErrorResponse;
@@ -114,14 +113,30 @@ public class UserController {
 	}
 
 	@GetMapping(UserConstant.SEARCH_USER)
-	public ResponseEntity<?> searchUser() {
+	public ResponseEntity<?> searchUser(@RequestBody SearchUserDto searchUserDto) {
 		ApiResponse apiResponse = new ApiResponse();
 		try {
-			List<UserEntity> getUser = userService.searchUser();
-			apiResponse.setResponseCode(200);
-			apiResponse.setMessage("Get All User successfully.");
-			apiResponse.setErrorMessage(false);
-			apiResponse.setData(getUser);
+			if(searchUserDto!=null) {
+				if (searchUserDto.getFirstname() != null && !searchUserDto.getFirstname().isEmpty() || searchUserDto.getMobile() != null
+						&& !searchUserDto.getMobile() .isEmpty() || searchUserDto.getEmail() != null && !searchUserDto.getEmail().isEmpty()) {
+				List<UserEntity> getUser = userService.searchUser(searchUserDto);
+				
+				apiResponse.setResponseCode(200);
+				apiResponse.setMessage("User search successfully.");
+				apiResponse.setErrorMessage(false);
+				apiResponse.setData(getUser);
+				}else {
+					throw new RuntimeException(
+							"Please provide at least one search criteria (firstname,mobile,email) to search for users");
+				}
+			}else {
+				apiResponse.setResponseCode(200);
+				apiResponse.setMessage("Search using name ,mobile ,email .");
+				apiResponse.setErrorMessage(false);
+				return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+			}
+			
+			
 		} catch (Exception e) {
 			logger.info("Service method called using @SEARCH_USER"+e.getMessage()); 
 			e.printStackTrace();
