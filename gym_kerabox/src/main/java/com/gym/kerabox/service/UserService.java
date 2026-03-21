@@ -19,9 +19,9 @@ public interface UserService {
 
 	public List<UserEntity> getUser();
 
-	public List<UserEntity> searchUser(SearchUserDto searchUserDto);
+	public List<UserEntity> searchUser(String firstname,String mobile,String email);
 
-	public List<UserEntity> deleteUser();
+	public void deleteUser(long id);
 
 	public Long getUsetCount();
 

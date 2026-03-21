@@ -1,4 +1,5 @@
 package com.gym.kerabox.controller;
+
 /**
  * UserController class for managing users.
  *
@@ -16,15 +17,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gym.kerabox.constant.UserConstant;
-import com.gym.kerabox.dto.SearchUserDto;
 import com.gym.kerabox.dto.UserDto;
 import com.gym.kerabox.entity.UserEntity;
 import com.gym.kerabox.exceptionhandler.ErrorResponse;
@@ -43,7 +45,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class UserController {
 
 	private static final Logger logger = Logger.getLogger(UserController.class.getName());
-	
+
 	@Autowired
 	UserService userService;
 
@@ -71,7 +73,7 @@ public class UserController {
 			}
 
 		} catch (Exception e) {
-			logger.info("Service method called using @SAVE_USER"+e.getMessage()); 
+			logger.info("Service method called using @SAVE_USER" + e.getMessage());
 			e.printStackTrace();
 		}
 
@@ -83,20 +85,26 @@ public class UserController {
 		ApiResponse apiResponse = new ApiResponse();
 		try {
 			List<UserEntity> getUser = userService.getUser();
-			apiResponse.setResponseCode(200);
-			apiResponse.setCount(getUser.size());
-			apiResponse.setMessage("Get All User successfully.");
-			apiResponse.setErrorMessage(false);
-			apiResponse.setData(getUser);
+			if(getUser!=null && !getUser.isEmpty()) {
+				apiResponse.setResponseCode(200);
+				apiResponse.setCount(getUser.size());
+				apiResponse.setMessage("Get All User successfully.");
+				apiResponse.setErrorMessage(false);
+				apiResponse.setData(getUser);
+			}else {
+				apiResponse.setMessage("No Records Found .");
+				return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+			}
+			
 		} catch (Exception e) {
-			logger.info("Service method called using @GET_ALL_USER"+e.getMessage());
+			logger.info("Service method called using @GET_ALL_USER" + e.getMessage());
 			e.printStackTrace();
 		}
 		return new ResponseEntity<>(apiResponse, HttpStatus.OK);
 	}
 
 	@PutMapping(UserConstant.UPDATE_USER)
-	public ResponseEntity<?> getUser(@RequestBody UserDto userDto ) {
+	public ResponseEntity<?> getUser(@RequestBody UserDto userDto) {
 		ApiResponse apiResponse = new ApiResponse();
 		try {
 			UserDto getUser = userService.updateUser(userDto);
@@ -106,55 +114,60 @@ public class UserController {
 			apiResponse.setErrorMessage(false);
 			apiResponse.setData(getUser);
 		} catch (Exception e) {
-			logger.info("Service method called using @UPDATE_USER"+e.getMessage());
+			logger.info("Service method called using @UPDATE_USER" + e.getMessage());
 			e.printStackTrace();
 		}
 		return new ResponseEntity<>(apiResponse, HttpStatus.OK);
 	}
 
 	@GetMapping(UserConstant.SEARCH_USER)
-	public ResponseEntity<?> searchUser(@RequestBody SearchUserDto searchUserDto) {
+	public ResponseEntity<?> searchUser(@RequestParam(value = "firstname", required = false) String firstname,
+			@RequestParam(value = "mobile", required = false) String mobile,
+			@RequestParam(value = "email", required = false) String email) {
 		ApiResponse apiResponse = new ApiResponse();
 		try {
-			if(searchUserDto!=null) {
-				if (searchUserDto.getFirstname() != null && !searchUserDto.getFirstname().isEmpty() || searchUserDto.getMobile() != null
-						&& !searchUserDto.getMobile() .isEmpty() || searchUserDto.getEmail() != null && !searchUserDto.getEmail().isEmpty()) {
-				List<UserEntity> getUser = userService.searchUser(searchUserDto);
-				
-				apiResponse.setResponseCode(200);
-				apiResponse.setMessage("User search successfully.");
-				apiResponse.setErrorMessage(false);
-				apiResponse.setData(getUser);
+			if (firstname != null && !firstname.isEmpty() || mobile != null && !mobile.isEmpty()
+					|| email != null && !email.isEmpty()) {
+				List<UserEntity> getUser = userService.searchUser(firstname, mobile, email);
+				if(getUser!=null && !getUser.isEmpty()) {
+					apiResponse.setResponseCode(200);
+					apiResponse.setMessage("User search successfully.");
+					apiResponse.setErrorMessage(false);
+					apiResponse.setData(getUser);
 				}else {
-					throw new RuntimeException(
-							"Please provide at least one search criteria (firstname,mobile,email) to search for users");
+					apiResponse.setMessage("No Records Found .");
+					return new ResponseEntity<>(apiResponse, HttpStatus.OK);
 				}
-			}else {
-				apiResponse.setResponseCode(200);
-				apiResponse.setMessage("Search using name ,mobile ,email .");
-				apiResponse.setErrorMessage(false);
-				return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+				
+			} else {
+				throw new RuntimeException(
+						"Please provide at least one search criteria (firstname,mobile,email) to search for users");
 			}
-			
-			
+
 		} catch (Exception e) {
-			logger.info("Service method called using @SEARCH_USER"+e.getMessage()); 
+			logger.info("Service method called using @SEARCH_USER" + e.getMessage());
 			e.printStackTrace();
 		}
 		return new ResponseEntity<>(apiResponse, HttpStatus.OK);
 	}
 
 	@DeleteMapping(UserConstant.DELETE_USER)
-	public ResponseEntity<?> deleteUser() {
+	public ResponseEntity<?> deleteUser(@PathVariable("id") long id) {
 		ApiResponse apiResponse = new ApiResponse();
 		try {
-			List<UserEntity> getUser = userService.deleteUser();
-			apiResponse.setResponseCode(200);
-			apiResponse.setMessage("Get All User successfully.");
-			apiResponse.setErrorMessage(false);
-			apiResponse.setData(getUser);
+			if(id!=0) {
+				userService.deleteUser(id);
+				apiResponse.setResponseCode(200);
+				apiResponse.setMessage("User Id:"+id +" Deleted successfully.");
+				apiResponse.setErrorMessage(false);
+			}else {
+				apiResponse.setResponseCode(200);
+				apiResponse.setMessage("plese provide valid user id to delete user.");
+				apiResponse.setErrorMessage(false);
+			}
+			
 		} catch (Exception e) {
-			logger.info("Service method called using @SEARCH_USER"+e.getMessage()); 
+			logger.info("Service method called using @DELETE_USER" + e.getMessage());
 			e.printStackTrace();
 		}
 		return new ResponseEntity<>(apiResponse, HttpStatus.OK);

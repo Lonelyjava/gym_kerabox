@@ -81,12 +81,11 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<UserEntity> searchUser(SearchUserDto searchUserDto) {
+	public List<UserEntity> searchUser(String firstname, String mobile, String email) {
 		List<UserEntity> userList = null;
-		if (searchUserDto.getFirstname() != null || searchUserDto.getMobile() != null
-				|| searchUserDto.getEmail() != null) {
-			userList = userReposistory.searchUserByFirstnameOrMobileOrEmail(searchUserDto.getFirstname(),
-					searchUserDto.getMobile(), searchUserDto.getEmail());
+		if (firstname != null && !firstname.isEmpty() || mobile != null && !mobile.isEmpty()
+				|| email != null && !email.isEmpty()) {
+			userList = userReposistory.searchUserByFirstnameOrMobileOrEmail(firstname, mobile, email);
 		} else {
 
 			throw new RuntimeException(
@@ -96,9 +95,8 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<UserEntity> deleteUser() {
-		// TODO Auto-generated method stub
-		return null;
+	public void deleteUser(long id) {
+	 	userReposistory.deleteById(id);
 	}
 
 	@Override
