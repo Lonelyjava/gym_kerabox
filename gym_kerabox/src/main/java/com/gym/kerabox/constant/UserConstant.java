@@ -14,5 +14,7 @@ public class UserConstant {
 	public static final String SEARCH_USER = "/searchUser";
 	public static final String DELETE_USER = "/deleteUser/{id}";
 	public static final String GET_ALL_USER = "/getAllUser";
+	public static final String GET_ALL_MESSAGE_REQ = "/getAllMessageReq";
+	public static final String GET_LATEST_MESSAGE_REQ = "/getLatestMessageReq";
 
 }
