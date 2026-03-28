@@ -81,6 +81,7 @@ public class UserController {
 	}
 
 	@GetMapping(UserConstant.GET_ALL_USER)
+	@Operation(summary = "Find all usres")
 	public ResponseEntity<?> getAllUsers() {
 		ApiResponse apiResponse = new ApiResponse();
 		try {
@@ -104,6 +105,7 @@ public class UserController {
 	}
 
 	@PutMapping(UserConstant.UPDATE_USER)
+	@Operation(summary = "Update user details")
 	public ResponseEntity<?> getUser(@RequestBody UserDto userDto) {
 		ApiResponse apiResponse = new ApiResponse();
 		try {
@@ -121,6 +123,7 @@ public class UserController {
 	}
 
 	@GetMapping(UserConstant.SEARCH_USER)
+	@Operation(summary = "Search user by firstname,mobile,email")
 	public ResponseEntity<?> searchUser(@RequestParam(value = "firstname", required = false) String firstname,
 			@RequestParam(value = "mobile", required = false) String mobile,
 			@RequestParam(value = "email", required = false) String email) {
@@ -152,6 +155,7 @@ public class UserController {
 	}
 
 	@DeleteMapping(UserConstant.DELETE_USER)
+	@Operation(summary = "Delete user by id")
 	public ResponseEntity<?> deleteUser(@PathVariable("id") long id) {
 		ApiResponse apiResponse = new ApiResponse();
 		try {
