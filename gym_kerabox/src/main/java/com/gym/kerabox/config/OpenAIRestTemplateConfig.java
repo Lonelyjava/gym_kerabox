@@ -10,7 +10,7 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 public class OpenAIRestTemplateConfig {
 
-    @Value("${ai.api.key}")
+    @Value("${chat.api.key}")
     private String aiApiKey;
 
     @Bean
