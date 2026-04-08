@@ -19,10 +19,10 @@ public class ChatController {
     @Autowired
     private RestTemplate restTemplate;
     
-    @Value("${openai.model}")
+    @Value("${chat.model}")
     private String model;
     
-    @Value("${openai.api.url}")
+    @Value("${chat.api.url}")
     private String apiUrl;
     
     @GetMapping("/chat")
