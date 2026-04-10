@@ -16,5 +16,9 @@ public class UserConstant {
 	public static final String GET_ALL_USER = "/getAllUser";
 	public static final String GET_ALL_MESSAGE_REQ = "/getAllMessageReq";
 	public static final String GET_LATEST_MESSAGE_REQ = "/getLatestMessageReq";
+	public static final String ACTIVE_USER = "/activeUser";
+	public static final String INACTIVE_USER = "/inactiveUser";
+	public static final String TOTAL_USER = "/totalUser";
+	public static final String NEW_USER = "/newUser";
 
 }

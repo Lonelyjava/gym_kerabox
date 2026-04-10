@@ -22,4 +22,6 @@ public interface UserReposistory extends JpaRepository<UserEntity,Long> {
 	public UserEntity checkUserAlreadyExist(@Param("mobile")String mobile,@Param("email") String email);
 
 	public List<UserEntity> searchUserByFirstnameOrMobileOrEmail(String firstname, String mobile, String email);
+
+	public List<UserEntity> findByStatus(String status);
 }
