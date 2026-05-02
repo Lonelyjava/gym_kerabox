@@ -17,10 +17,9 @@ public class DashboardServiceImpl implements DashboardService{
 	@Autowired
 	UserReposistory userReposistory;
 	@Override
-	public List<UserEntity> getActiveUser() {
+	public List<UserEntity> getActiveUser(String status) {
 		// TODO Auto-generated method stub
 		DashboardDto dashboardDto = new DashboardDto();
-		String status ="active";
 		List<UserEntity> userEntity = userReposistory.findByStatus(status);
 		
 		return userEntity;

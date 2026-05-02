@@ -7,6 +7,6 @@ import com.gym.kerabox.entity.UserEntity;
 
 public interface DashboardService {
 
-	 public List<UserEntity> getActiveUser();
+	 public List<UserEntity> getActiveUser(String status);
 
 }

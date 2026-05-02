@@ -34,6 +34,7 @@ import com.gym.kerabox.exceptionhandler.NoSuchUserExistsException;
 import com.gym.kerabox.exceptionhandler.UserAlreadyExistsException;
 import com.gym.kerabox.response.ApiResponse;
 import com.gym.kerabox.service.UserService;
+import com.gym.kerabox.validator.UserValidator;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -54,6 +55,14 @@ public class UserController {
 	public ResponseEntity<?> saveUserDetails(@RequestBody UserDto userDto) {
 		ApiResponse apiResponse = new ApiResponse();
 		try {
+
+			String userValidate = UserValidator.saveUserValidation(userDto);
+			if (userValidate != null) {
+				apiResponse.setResponseCode(200);
+				apiResponse.setMessage(userValidate);
+				return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+			}
+
 			UserEntity checkedUser = userService.checkedUserAlreadyExist(userDto.getMobile(), userDto.getEmail());
 			if (checkedUser != null) {
 //				apiResponse.setCount(countUser);
@@ -86,17 +95,17 @@ public class UserController {
 		ApiResponse apiResponse = new ApiResponse();
 		try {
 			List<UserEntity> getUser = userService.getUser();
-			if(getUser!=null && !getUser.isEmpty()) {
+			if (getUser != null && !getUser.isEmpty()) {
 				apiResponse.setResponseCode(200);
 				apiResponse.setCount(getUser.size());
 				apiResponse.setMessage("Get All User successfully.");
 				apiResponse.setErrorMessage(false);
 				apiResponse.setData(getUser);
-			}else {
+			} else {
 				apiResponse.setMessage("No Records Found .");
 				return new ResponseEntity<>(apiResponse, HttpStatus.OK);
 			}
-			
+
 		} catch (Exception e) {
 			logger.info("Service method called using @GET_ALL_USER" + e.getMessage());
 			e.printStackTrace();
@@ -132,16 +141,16 @@ public class UserController {
 			if (firstname != null && !firstname.isEmpty() || mobile != null && !mobile.isEmpty()
 					|| email != null && !email.isEmpty()) {
 				List<UserEntity> getUser = userService.searchUser(firstname, mobile, email);
-				if(getUser!=null && !getUser.isEmpty()) {
+				if (getUser != null && !getUser.isEmpty()) {
 					apiResponse.setResponseCode(200);
 					apiResponse.setMessage("User search successfully.");
 					apiResponse.setErrorMessage(false);
 					apiResponse.setData(getUser);
-				}else {
+				} else {
 					apiResponse.setMessage("No Records Found .");
 					return new ResponseEntity<>(apiResponse, HttpStatus.OK);
 				}
-				
+
 			} else {
 				throw new RuntimeException(
 						"Please provide at least one search criteria (firstname,mobile,email) to search for users");
@@ -159,17 +168,17 @@ public class UserController {
 	public ResponseEntity<?> deleteUser(@PathVariable("id") long id) {
 		ApiResponse apiResponse = new ApiResponse();
 		try {
-			if(id!=0) {
+			if (id != 0) {
 				userService.deleteUser(id);
 				apiResponse.setResponseCode(200);
-				apiResponse.setMessage("User Id:"+id +" Deleted successfully.");
+				apiResponse.setMessage("User Id:" + id + " Deleted successfully.");
 				apiResponse.setErrorMessage(false);
-			}else {
+			} else {
 				apiResponse.setResponseCode(200);
 				apiResponse.setMessage("plese provide valid user id to delete user.");
 				apiResponse.setErrorMessage(false);
 			}
-			
+
 		} catch (Exception e) {
 			logger.info("Service method called using @DELETE_USER" + e.getMessage());
 			e.printStackTrace();
