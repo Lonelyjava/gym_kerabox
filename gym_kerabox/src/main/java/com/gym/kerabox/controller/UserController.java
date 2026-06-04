@@ -33,7 +33,7 @@ import com.gym.kerabox.exceptionhandler.ErrorResponse;
 import com.gym.kerabox.exceptionhandler.NoSuchUserExistsException;
 import com.gym.kerabox.exceptionhandler.UserAlreadyExistsException;
 import com.gym.kerabox.response.ApiResponse;
-import com.gym.kerabox.service.UserService;
+import com.gym.kerabox.service.UsersServices;
 import com.gym.kerabox.validator.UserValidator;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -48,7 +48,7 @@ public class UserController {
 	private static final Logger logger = Logger.getLogger(UserController.class.getName());
 
 	@Autowired
-	UserService userService;
+	UsersServices userService;
 
 	@PostMapping(UserConstant.SAVE_USER)
 	@Operation(summary = "Create new user")

@@ -1,145 +1,80 @@
 package com.gym.kerabox.serviceImpl;
 
-/**
- * UserController class for managing users.
- *
- * @author Kundan Kumar
- * @version 1.0
- * @since 2026-03-17
- */
-import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.logging.Logger;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.gym.kerabox.controller.UserController;
-import com.gym.kerabox.dto.SearchUserDto;
-import com.gym.kerabox.dto.UserDto;
-import com.gym.kerabox.entity.AddressEntity;
-import com.gym.kerabox.entity.Employee;
-import com.gym.kerabox.entity.UserEntity;
-import com.gym.kerabox.reposistory.EmployeeReposistory;
-import com.gym.kerabox.reposistory.UserReposistory;
+import com.gym.kerabox.dto.UsersDto;
+import com.gym.kerabox.entity.Role;
+import com.gym.kerabox.entity.User;
+import com.gym.kerabox.reposistory.UserDao;
+import com.gym.kerabox.service.RoleService;
 import com.gym.kerabox.service.UserService;
 
-@Service
-public class UserServiceImpl implements UserService {
+@Service(value = "userService")
+public class UserServiceImpl implements UserDetailsService, UserService {
 
-	private static final Logger logger = Logger.getLogger(UserController.class.getName());
-	@Autowired
-	UserReposistory userReposistory;
+    @Autowired
+    private RoleService roleService;
 
-	@Autowired
-	EmployeeReposistory employeeReposistory;
+    @Autowired
+    private UserDao userDao;
 
-	@Override
-	public UserEntity saveUser(UserDto userDto) {
-		UserEntity userEntity = new UserEntity();
-		AddressEntity addressEntity = new AddressEntity();
-		userEntity.setFirstname(userDto.getFirstname());
-		userEntity.setLastname(userDto.getLastname());
-		userEntity.setEmail(userDto.getEmail());
-		userEntity.setGender(userDto.getGender());
-		userEntity.setStatus(userDto.getStatus());
-		userEntity.setMobile(userDto.getMobile());
-		userEntity.setCreatedBy(LocalDate.now());
-		userEntity.setLoggedInBy("kundan");
-		userEntity.setUpdatedBy(LocalDate.now());
-		addressEntity.setAddress1(userDto.getAddress1());
-		addressEntity.setAddress2(userDto.getAddress2());
-		addressEntity.setCreatedBy(LocalDate.now());
-		addressEntity.setDistric(userDto.getDistric());
-		addressEntity.setLoggedInBy("kudnan");
-		addressEntity.setPincode(userDto.getPincode());
-		addressEntity.setState(userDto.getState());
-		addressEntity.setUpdatedBy(LocalDate.now());
-		addressEntity.setUserEntity(userEntity);
-		userEntity.setAddress(addressEntity);
-		userReposistory.save(userEntity);
-		System.out.println("data save successfully.");
-		return userEntity;
-	}
+//    @Autowired
+//    private BCryptPasswordEncoder bcryptEncoder;
 
-	@Override
-	public void saveEmp() {
-		for (int i = 0; i < 10; i++) {
-			Employee employee = new Employee();
-			employee.setCompany("tekmindz" + i);
-			employee.setDept("CSE" + i);
-			employee.setName("Kundan" + i);
-			employee.setSalary(5000 + i);
-			employeeReposistory.save(employee);
-			System.out.println("saved emp details");
-		}
-	}
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userDao.findByUsername(username);
+        if(user == null){
+            throw new UsernameNotFoundException("Invalid username or password.");
+        }
+        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), getAuthority(user));
+    }
 
-	@Override
-	public List<UserEntity> getUser() {
-		return userReposistory.findAll();
-	}
+    private Set<SimpleGrantedAuthority> getAuthority(User user) {
+        Set<SimpleGrantedAuthority> authorities = new HashSet<>();
+        user.getRoles().forEach(role -> {
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getName()));
+        });
+        return authorities;
+    }
 
-	@Override
-	public List<UserEntity> searchUser(String firstname, String mobile, String email) {
-		List<UserEntity> userList = null;
-		if (firstname != null && !firstname.isEmpty() || mobile != null && !mobile.isEmpty()
-				|| email != null && !email.isEmpty()) {
-			userList = userReposistory.searchUserByFirstnameOrMobileOrEmail(firstname, mobile, email);
-		} else {
+    public List<User> findAll() {
+        List<User> list = new ArrayList<>();
+        userDao.findAll().iterator().forEachRemaining(list::add);
+        return list;
+    }
 
-			throw new RuntimeException(
-					"Please provide at least one search criteria (firstname,mobile,email) to search for users");
-		}
-		return userList;
-	}
+    @Override
+    public User findOne(String username) {
+        return userDao.findByUsername(username);
+    }
 
-	@Override
-	public void deleteUser(long id) {
-	 	userReposistory.deleteById(id);
-	}
+       @Override
+    public User save(UsersDto user) {
 
-	@Override
-	public Long getUsetCount() {
-		// TODO Auto-generated method stub
-		return userReposistory.count();
-	}
+        User nUser = user.getUserFromDto();
+//        nUser.setPassword(bcryptEncoder.encode(user.getPassword()));
 
-	@Override
-	public UserEntity checkedUserAlreadyExist(String mobile, String email) {
-		// TODO Auto-generated method stub
+        Role role = roleService.findByName("USER");
+        Set<Role> roleSet = new HashSet<>();
+        roleSet.add(role);
 
-		UserEntity checkedUser = userReposistory.checkUserAlreadyExist(mobile, email);
-		return checkedUser;
-	}
+        if(nUser.getEmail().split("@")[1].equals("admin.edu")){
+            role = roleService.findByName("ADMIN");
+            roleSet.add(role);
+        }
 
-	@Override
-	public UserDto updateUser(UserDto userDto) {
-		if (userDto != null) {
-			UserEntity userEntity = userReposistory.findById(userDto.getId())
-					.orElseThrow(() -> new RuntimeException("User not found with id :" + userDto.getId()));
-			userEntity.setFirstname(userDto.getFirstname());
-			userEntity.setLastname(userDto.getLastname());
-			userEntity.setEmail(userDto.getEmail());
-			userEntity.setMobile(userDto.getMobile());
-			userEntity.setGender(userDto.getGender());
-			userEntity.setStatus(userDto.getStatus());
-			userEntity.setUpdatedBy(LocalDate.now());
-			userEntity.setLoggedInBy("kundan");
-			AddressEntity addressEntity = new AddressEntity();
-			addressEntity.setAddress1(userDto.getAddress1());
-			addressEntity.setAddress2(userDto.getAddress2());
-			addressEntity.setDistric(userDto.getDistric());
-			addressEntity.setPincode(userDto.getPincode());
-			addressEntity.setState(userDto.getState());
-			addressEntity.setCreatedBy(LocalDate.now());
-			addressEntity.setLoggedInBy("kundan");
-			addressEntity.setUpdatedBy(LocalDate.now());
-			userEntity.setAddress(addressEntity);
-			userReposistory.save(userEntity);
-			logger.info("update user successfully @updateUser");
-
-		}
-		return userDto;
-	}
+        nUser.setRoles(roleSet);
+        return userDao.save(nUser);
+    }
 }
