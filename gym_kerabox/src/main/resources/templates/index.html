@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Kerabox Gym | Build Your Strength</title>
+	<link rel="stylesheet" href="style.css">
+	<!-- Font Awesome for Icons -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<style>
+	/* --- RESET & VARIABLES --- */
+	:root {
+		--primary: #ccff00;
+		/* Neon Green */
+		--dark: #1a1a1a;
+		--darker: #111111;
+		--light: #f4f4f4;
+		--gray: #333;
+		--font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	}
+
+	* {
+		margin: 0;
+		padding: 0;
+		box-sizing: border-box;
+		text-decoration: none;
+		list-style: none;
+		font-family: var(--font-main);
+	}
+
+	body {
+		background-color: var(--dark);
+		color: var(--light);
+		line-height: 1.6;
+	}
+
+	/* --- UTILITIES --- */
+	.container {
+		max-width: 1100px;
+		margin: 0 auto;
+		padding: 0 20px;
+	}
+
+	.section-padding {
+		padding: 80px 0;
+	}
+
+	.bg-dark {
+		background-color: #222;
+	}
+
+	.section-title {
+		text-align: center;
+		font-size: 2.5rem;
+		margin-bottom: 50px;
+		text-transform: uppercase;
+	}
+
+	.section-title span {
+		color: var(--primary);
+	}
+
+	/* --- BUTTONS --- */
+	.btn-main {
+		display: inline-block;
+		background: var(--primary);
+		color: var(--darker);
+		padding: 12px 30px;
+		border-radius: 5px;
+		font-weight: bold;
+		transition: 0.3s;
+		border: none;
+		cursor: pointer;
+	}
+
+	.btn-main:hover {
+		background: #fff;
+		transform: translateY(-2px);
+	}
+
+	.btn-outline {
+		display: inline-block;
+		border: 2px solid var(--primary);
+		color: var(--primary);
+		padding: 10px 30px;
+		border-radius: 5px;
+		font-weight: bold;
+		transition: 0.3s;
+		background: transparent;
+		cursor: pointer;
+	}
+
+	.btn-outline:hover {
+		background: var(--primary);
+		color: var(--darker);
+	}
+
+	/* --- NAVIGATION --- */
+	.navbar {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 20px 5%;
+		background: rgba(0, 0, 0, 0.9);
+		position: fixed;
+		width: 100%;
+		top: 0;
+		z-index: 1000;
+		backdrop-filter: blur(10px);
+	}
+
+	.logo {
+		font-size: 1.8rem;
+		font-weight: bold;
+		color: var(--light);
+	}
+
+	.logo span {
+		color: var(--primary);
+	}
+
+	.nav-links {
+		display: flex;
+		gap: 30px;
+	}
+
+	.nav-links a {
+		color: var(--light);
+		font-weight: 500;
+		transition: 0.3s;
+	}
+
+	.nav-links a:hover {
+		color: var(--primary);
+	}
+
+	.btn-nav {
+		background: var(--primary);
+		color: var(--darker) !important;
+		padding: 8px 20px;
+		border-radius: 4px;
+		font-weight: bold;
+	}
+
+	.hamburger {
+		display: none;
+		font-size: 1.5rem;
+		cursor: pointer;
+	}
+
+	/* --- HERO SECTION --- */
+	.hero {
+		height: 100vh;
+		background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+			url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+		background-size: cover;
+		background-position: center;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		text-align: center;
+		margin-top: 60px;
+	}
+
+	.hero h1 {
+		font-size: 3.5rem;
+		margin-bottom: 20px;
+	}
+
+	.hero p {
+		font-size: 1.2rem;
+		margin-bottom: 30px;
+		max-width: 600px;
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+	.highlight {
+		color: var(--primary);
+	}
+
+	/* --- ABOUT --- */
+	.about-grid {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 40px;
+		align-items: center;
+	}
+
+	.stats {
+		display: flex;
+		justify-content: space-around;
+		text-align: center;
+	}
+
+	.stat-box h3 {
+		font-size: 2.5rem;
+		color: var(--primary);
+	}
+
+	.stat-box p {
+		font-size: 1.1rem;
+		font-weight: bold;
+	}
+
+	/* --- CLASSES --- */
+	.class-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+		gap: 30px;
+	}
+
+	.class-card {
+		background: var(--dark);
+		padding: 30px;
+		border-radius: 10px;
+		text-align: center;
+		transition: 0.3s;
+		border: 1px solid #333;
+	}
+
+	.class-card:hover {
+		transform: translateY(-10px);
+		border-color: var(--primary);
+	}
+
+	.class-card i {
+		font-size: 3rem;
+		color: var(--primary);
+		margin-bottom: 20px;
+	}
+
+	.class-card h3 {
+		margin-bottom: 15px;
+	}
+
+	/* --- PRICING --- */
+	.pricing-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+		gap: 30px;
+	}
+
+	.price-card {
+		background: #222;
+		padding: 40px;
+		border-radius: 10px;
+		text-align: center;
+		border: 1px solid #333;
+	}
+
+	.price-card.popular {
+		border: 2px solid var(--primary);
+		position: relative;
+	}
+
+	#contact {
+		background-color: #222;
+	}
+
+	.contact-form {
+		max-width: 600px;
+		margin: 0 auto;
+		display: flex;
+		flex-direction: column;
+		gap: 20px;
+	}
+
+	.contact-form input,
+	.contact-form textarea {
+		width: 100%;
+		padding: 15px 20px;
+		border-radius: 5px;
+		border: 2px solid #333;
+		background-color: #1a1a1a;
+		color: #f4f4f4;
+		font-size: 1rem;
+		transition: 0.3s;
+		outline: none;
+	}
+
+	.contact-form input,
+	.contact-form textarea {
+		width: 100%;
+		padding: 15px 20px;
+		border-radius: 5px;
+		border: 2px solid #333;
+		background-color: #1a1a1a;
+		color: #f4f4f4;
+		font-size: 1rem;
+		transition: 0.3s;
+		outline: none;
+	}
+</style>
+
+<body>
+
+	<!-- Navigation -->
+	<nav class="navbar">
+		<div class="logo">Kerabox<span>GYM</span></div>
+		<ul class="nav-links">
+			<li><a href="#home">Home</a></li>
+			<li><a href="#about">About</a></li>
+			<li><a href="#classes">Classes</a></li>
+			<li><a href="#pricing">Pricing</a></li>
+			<li><a href="#contact" class="btn-nav">Join Now</a></li>
+		</ul>
+		<div class="hamburger">
+			<i class="fas fa-bars"></i>
+		</div>
+	</nav>
+
+	<!-- Hero Section -->
+	<section id="home" class="hero">
+		<div class="hero-content">
+			<h1>Unlock Your <span class="highlight">True Potential</span></h1>
+			<p>State-of-the-art equipment, expert trainers, and a community that pushes you to be your best.</p>
+			<a href="#pricing" class="btn-main">Start Your Journey</a>
+		</div>
+	</section>
+
+	<!-- About Section -->
+	<section id="about" class="section-padding">
+		<div class="container">
+			<h2 class="section-title">Who We Are</h2>
+			<div class="about-grid">
+				<div class="about-text">
+					<p>At Kerabox, we believe fitness is not just a hobby—it's a lifestyle. We provide a welcoming
+						environment for beginners and pros alike. Whether you want to lose weight, build muscle, or
+						compete in athletics, we have the tools to help you succeed.</p>
+				</div>
+				<div class="stats">
+					<div class="stat-box">
+						<h3>500+</h3>
+						<p>Members</p>
+					</div>
+					<div class="stat-box">
+						<h3>20+</h3>
+						<p>Trainers</p>
+					</div>
+					<div class="stat-box">
+						<h3>10+</h3>
+						<p>Classes</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Classes Section -->
+	<section id="classes" class="section-padding bg-dark">
+		<div class="container">
+			<h2 class="section-title">Our Classes</h2>
+			<div class="class-grid">
+				<div class="class-card">
+					<i class="fas fa-dumbbell"></i>
+					<h3>Weight Training</h3>
+					<p>Build muscle and strength with our free weights and machines.</p>
+				</div>
+				<div class="class-card">
+					<i class="fas fa-running"></i>
+					<h3>HIIT Cardio</h3>
+					<p>High-intensity interval training to burn fat fast.</p>
+				</div>
+				<div class="class-card">
+					<i class="fas fa-person-praying"></i>
+					<h3>Yoga & Pilates</h3>
+					<p>Improve flexibility and core strength.</p>
+				</div>
+				<div class="class-card">
+					<i class="fas fa-bicycle"></i>
+					<h3>Spin Class</h3>
+					<p>Indoor cycling for endurance and leg strength.</p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Pricing Section -->
+	<section id="pricing" class="section-padding">
+		<div class="container">
+			<h2 class="section-title">Membership Plans</h2>
+			<div class="pricing-grid">
+				<div class="price-card">
+					<h3>Basic</h3>
+					<div class="price">$30<span>/mo</span></div>
+					<ul>
+						<li><i class="fas fa-check"></i> Gym Access</li>
+						<li><i class="fas fa-check"></i> Locker Room</li>
+						<li><i class="fas fa-times" style="color: #888;"></i> Group Classes</li>
+					</ul>
+					<button class="btn-outline">Select Plan</button>
+				</div>
+				<div class="price-card popular">
+					<h3>Pro</h3>
+					<div class="price">$50<span>/mo</span></div>
+					<ul>
+						<li><i class="fas fa-check"></i> 24/7 Gym Access</li>
+						<li><i class="fas fa-check"></i> Free Guest Pass</li>
+						<li><i class="fas fa-check"></i> Group Classes</li>
+					</ul>
+					<button class="btn-main">Select Plan</button>
+				</div>
+				<div class="price-card">
+					<h3>Elite</h3>
+					<div class="price">$80<span>/mo</span></div>
+					<ul>
+						<li><i class="fas fa-check"></i> All Pro Features</li>
+						<li><i class="fas fa-check"></i> Personal Trainer</li>
+						<li><i class="fas fa-check"></i> Nutrition Plan</li>
+					</ul>
+					<button class="btn-outline">Select Plan</button>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Contact Section -->
+
+	<section id="contact" class="section-padding bg-dark">
+		<div th:switch="${message}">
+			    <div th:case="'Success'" class="alert alert-success">
+			        <strong>Success!</strong> Operation performed successfully.
+			    </div>
+			    <div th:case="'Failed'" class="alert alert-danger">
+			        <strong>Failure!</strong> Operation failed. Please try again 
+			    </div>
+			</div>
+		<div class="container">
+			<h2 class="section-title">Get In Touch</h2>
+			<form class="contact-form" action="#" th:action="@{/save}" th:object="${userMessgae}" method="POST">
+				<input type="text" name="name" placeholder="Your Name" required>
+				<input type="text" name="mobile" placeholder="Your mobile" maxlength="10">
+				<input type="email" name="email" placeholder="Your Email" required>
+				<textarea name="message" placeholder="Message" rows="5" maxlength="100"></textarea>
+				<button type="submit" class="btn-main">Send Message</button>
+			</form>
+		</div>
+	</section>
+	
+	
+
+	<!-- Footer -->
+	<footer>
+		<div class="container footer-content">
+			<div class="footer-col">
+				<h3>Kerabox Fitness Center</h3>
+				<p>B-78 B-Block Near By Pili Khoti , New Ashok Nagar ,Delhi 110096</p>
+			</div>
+			<div class="footer-col">
+				<div class="socials">
+					<a href="#"><i class="fab fa-facebook"></i></a>
+					<a href="#"><i class="fab fa-instagram"></i></a>
+					<a href="#"><i class="fab fa-twitter"></i></a>
+				</div>
+			</div>
+		</div>
+		<div class="footer-bottom">
+			<p>&copy; 2023 Kerabox Fitness Center Gym. All rights reserved.</p>
+		</div>
+	</footer>
+
+	<script>
+		// Simple Mobile Navigation Toggle
+		const hamburger = document.querySelector('.hamburger');
+		const navLinks = document.querySelector('.nav-links');
+
+		hamburger.addEventListener('click', () => {
+			navLinks.classList.toggle('active');
+		});
+
+		// Close menu when a link is clicked
+		document.querySelectorAll('.nav-links li a').forEach(link => {
+			link.addEventListener('click', () => {
+				navLinks.classList.remove('active');
+			});
+		});
+	</script>
+</body>
+
+</html>
