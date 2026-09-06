@@ -1,5 +1,11 @@
 package com.gym.kerabox.entity;
-
+/**
+ * UserController class for managing users.
+ *
+ * @author Kundan Kumar
+ * @version 1.0
+ * @since 2026-03-17
+ */
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
@@ -17,14 +23,30 @@ public class UserEntity  extends  BaseEntity{
     private String lastname;
     private String email;
     private String mobile;
+    private String gender;
+    private String status = "false";
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id", referencedColumnName = "id")
-    @JsonIgnore
+//    @JsonIgnore
     private AddressEntity address;
+    
+    
+    
 
 
-    public String getFirstname() {
+    public UserEntity() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public UserEntity(String email, String mobile) {
+		super();
+		this.email = email;
+		this.mobile = mobile;
+	}
+
+	public String getFirstname() {
         return firstname;
     }
 
@@ -64,14 +86,28 @@ public class UserEntity  extends  BaseEntity{
         this.address = address;
     }
 
-    @Override
-    public String toString() {
-        return "UserEntity{" +
-                "firstname='" + firstname + '\'' +
-                ", lastname='" + lastname + '\'' +
-                ", email='" + email + '\'' +
-                ", mobile='" + mobile + '\'' +
-                ", address=" + address +
-                '}';
-    }
+    public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	@Override
+	public String toString() {
+		return "UserEntity [firstname=" + firstname + ", lastname=" + lastname + ", email=" + email + ", mobile="
+				+ mobile + ", gender=" + gender + ", status=" + status + ", address=" + address + "]";
+	}
+    
 }

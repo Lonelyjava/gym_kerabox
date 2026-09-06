@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="keraboxApp">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kerabox Gym — Admin (AngularJS)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+  :root{
+    --ink:#241B3D; --ink-soft:#786F94;
+    --bg-1:#2E1F63; --bg-2:#7C4DFF;
+    --surface:#FFFFFF; --surface-soft:#F5F3FC; --line:#E9E4F7;
+    --accent:#FFB020; --mint:#2FD3A4; --rose:#FF5C7A;
+    --sidebar-w:250px; --radius:18px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:'Inter',sans-serif; color:var(--ink); background:var(--surface-soft); min-height:100vh; display:flex;}
+  h1,h2,h3,.display{font-family:'Space Grotesk',sans-serif;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+
+  .sidebar{width:var(--sidebar-w); min-height:100vh; background:linear-gradient(165deg,var(--bg-1) 0%, var(--bg-2) 100%); padding:28px 18px; position:fixed; top:0; left:0; bottom:0; display:flex; flex-direction:column; z-index:10;}
+  .brand{display:flex; align-items:center; gap:10px; color:#fff; padding:0 8px 28px;}
+  .brand span{font-weight:700; font-size:1.05rem;}
+  .brand small{display:block; font-family:'Inter'; font-weight:400; font-size:.68rem; color:rgba(255,255,255,.6); letter-spacing:1.5px; text-transform:uppercase;}
+  nav.nav-list{display:flex; flex-direction:column; gap:3px; flex:1;}
+  .nav-item{display:flex; align-items:center; gap:12px; color:rgba(255,255,255,.72); padding:11px 14px; border-radius:12px; font-size:.9rem; font-weight:500; cursor:pointer; transition:background .15s, color .15s;}
+  .nav-item svg{opacity:.85; flex-shrink:0;}
+  .nav-item:hover{background:rgba(255,255,255,.08); color:#fff;}
+  .nav-item.active{background:rgba(255,255,255,.16); color:#fff; box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);}
+  .nav-item.active svg{opacity:1;}
+  .sidebar-foot{margin-top:16px; padding:16px 14px; border-radius:14px; background:rgba(255,255,255,.08); color:rgba(255,255,255,.85);}
+  .pulse-wrap{display:flex; align-items:center; gap:8px; margin-bottom:6px;}
+  .dot-live{width:7px; height:7px; border-radius:50%; background:var(--mint); animation:pulseDot 1.8s infinite;}
+  @keyframes pulseDot{0%{box-shadow:0 0 0 0 rgba(47,211,164,.55);}70%{box-shadow:0 0 0 8px rgba(47,211,164,0);}100%{box-shadow:0 0 0 0 rgba(47,211,164,0);}}
+  .sidebar-foot p{font-size:.72rem; line-height:1.4; color:rgba(255,255,255,.6);}
+
+  .main{margin-left:var(--sidebar-w); flex:1; min-height:100vh; padding:30px 36px 60px;}
+  .topbar{display:flex; align-items:center; justify-content:space-between; margin-bottom:28px;}
+  .topbar h1{font-size:1.7rem; font-weight:700;}
+  .topbar-right{display:flex; align-items:center; gap:20px;}
+  .bell{position:relative; width:40px; height:40px; border-radius:12px; background:#fff; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 14px rgba(46,31,99,.08); cursor:pointer;}
+  .bell .badge{position:absolute; top:-5px; right:-5px; background:var(--rose); color:#fff; font-size:.62rem; font-weight:700; width:17px; height:17px; border-radius:50%; display:flex; align-items:center; justify-content:center;}
+  .who{display:flex; align-items:center; gap:10px;}
+  .who span{font-weight:600; font-size:.92rem;}
+  .avatar{width:38px; height:38px; border-radius:50%; background:linear-gradient(135deg,var(--bg-2),var(--accent)); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-family:'Space Grotesk';}
+
+  .page{animation:fadeUp .35s ease both;}
+  @keyframes fadeUp{from{opacity:0; transform:translateY(8px);}to{opacity:1; transform:translateY(0);}}
+
+  .stat-grid{display:grid; grid-template-columns:repeat(5,1fr); gap:18px; margin-bottom:26px;}
+  @media(max-width:1300px){.stat-grid{grid-template-columns:repeat(3,1fr);}}
+  .stat-card{background:var(--surface); border-radius:var(--radius); padding:20px; position:relative; overflow:hidden; box-shadow:0 8px 24px rgba(46,31,99,.06); display:flex; align-items:center; gap:14px;}
+  .stat-card::before{content:""; position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg,var(--bg-2),var(--accent));}
+  .ring{width:56px; height:56px; flex-shrink:0;}
+  .stat-text .label{font-size:.72rem; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.8px; font-weight:600; margin-bottom:4px;}
+  .stat-text .value{font-size:1.55rem; font-weight:700; font-family:'JetBrains Mono';}
+  .stat-text .delta{font-size:.72rem; font-weight:600; margin-top:2px;}
+  .delta.up{color:var(--mint);} .delta.down{color:var(--rose);}
+
+  .panel-grid{display:grid; grid-template-columns:1.6fr 1fr; gap:20px;}
+  @media(max-width:1100px){.panel-grid{grid-template-columns:1fr;}}
+  .panel{background:var(--surface); border-radius:var(--radius); padding:24px; box-shadow:0 8px 24px rgba(46,31,99,.06);}
+  .panel-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;}
+  .panel-head h2{font-size:1.15rem; font-weight:700;}
+  .pill-btn{border:none; background:var(--surface-soft); color:var(--ink); font-weight:600; font-size:.78rem; padding:8px 14px; border-radius:20px; cursor:pointer;}
+  table{width:100%; border-collapse:collapse;}
+  th{text-align:left; font-size:.7rem; text-transform:uppercase; letter-spacing:.6px; color:var(--ink-soft); padding:8px 10px; border-bottom:1px solid var(--line);}
+  td{padding:11px 10px; font-size:.87rem; border-bottom:1px solid var(--line);}
+  tr:last-child td{border-bottom:none;}
+  .handle{color:var(--bg-2); font-weight:600;}
+  .rank{width:26px; height:26px; border-radius:50%; background:var(--surface-soft); display:inline-flex; align-items:center; justify-content:center; font-size:.75rem; font-weight:700; color:var(--ink-soft);}
+  .rank.gold{background:linear-gradient(135deg,var(--accent),#FFD98A); color:#7a4a00;}
+  .status-badge{padding:4px 10px; border-radius:20px; font-size:.72rem; font-weight:700;}
+  .status-badge.active{background:rgba(47,211,164,.14); color:#1c9a76;}
+  .status-badge.inactive{background:rgba(255,92,122,.13); color:#d63f5c;}
+  .status-badge.pending{background:rgba(255,176,32,.16); color:#b9760a;}
+
+  .toolbar{display:flex; gap:12px; margin-bottom:18px; flex-wrap:wrap;}
+  .search{flex:1; min-width:220px; background:#fff; border-radius:12px; display:flex; align-items:center; gap:8px; padding:10px 14px; box-shadow:0 4px 14px rgba(46,31,99,.05);}
+  .search input{border:none; outline:none; font-size:.88rem; flex:1; font-family:inherit;}
+  .filter-btn{background:#fff; border:none; border-radius:12px; padding:10px 16px; font-weight:600; font-size:.85rem; color:var(--ink-soft); box-shadow:0 4px 14px rgba(46,31,99,.05); cursor:pointer;}
+  .avatar-sm{width:32px; height:32px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; color:#fff; font-size:.72rem; font-weight:700; font-family:'Space Grotesk'; margin-right:8px; vertical-align:middle;}
+
+  .plan-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
+  @media(max-width:1000px){.plan-grid{grid-template-columns:1fr;}}
+  .plan-card{background:#fff; border-radius:var(--radius); padding:26px; box-shadow:0 8px 24px rgba(46,31,99,.06); position:relative;}
+  .plan-card.popular{background:linear-gradient(160deg,var(--bg-1),var(--bg-2)); color:#fff;}
+  .plan-card.popular .plan-price small, .plan-card.popular ul li{color:rgba(255,255,255,.75);}
+  .plan-tag{position:absolute; top:18px; right:18px; background:var(--accent); color:#7a4a00; font-size:.65rem; font-weight:700; padding:4px 10px; border-radius:20px;}
+  .plan-tag.muted{background:var(--surface-soft); color:var(--ink-soft);}
+  .plan-price{font-family:'JetBrains Mono'; font-size:2rem; font-weight:700; margin:10px 0 14px;}
+  .plan-price small{font-size:.85rem; font-weight:500; color:var(--ink-soft);}
+  .plan-card ul{list-style:none; margin:14px 0 20px; font-size:.85rem;}
+  .plan-card ul li{padding:6px 0; color:var(--ink-soft); display:flex; gap:8px; align-items:center;}
+  .plan-card .cta{width:100%; padding:11px; border-radius:12px; border:none; font-weight:700; cursor:pointer; background:var(--ink); color:#fff;}
+  .plan-card.popular .cta{background:var(--accent); color:#4a2c00;}
+
+  .trainer-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:18px;}
+  @media(max-width:1100px){.trainer-grid{grid-template-columns:repeat(2,1fr);}}
+  .trainer-card{background:#fff; border-radius:var(--radius); padding:22px; text-align:center; box-shadow:0 8px 24px rgba(46,31,99,.06);}
+  .trainer-avatar{width:64px; height:64px; border-radius:50%; margin:0 auto 12px; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:1.2rem; font-family:'Space Grotesk';}
+  .trainer-card h3{font-size:1rem; margin-bottom:2px;}
+  .trainer-card .spec{font-size:.78rem; color:var(--ink-soft); margin-bottom:10px;}
+  .stars{color:var(--accent); font-size:.85rem;}
+
+  .msg-layout{display:grid; grid-template-columns:280px 1fr; gap:0; background:#fff; border-radius:var(--radius); overflow:hidden; box-shadow:0 8px 24px rgba(46,31,99,.06); min-height:520px;}
+  .conv-list{border-right:1px solid var(--line); padding:16px;}
+  .conv-item{display:flex; gap:10px; align-items:center; padding:10px; border-radius:12px; cursor:pointer;}
+  .conv-item.active, .conv-item:hover{background:var(--surface-soft);}
+  .conv-item .name{font-weight:600; font-size:.87rem;}
+  .conv-item .preview{font-size:.75rem; color:var(--ink-soft); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .chat-area{display:flex; flex-direction:column; padding:20px;}
+  .chat-head{border-bottom:1px solid var(--line); padding-bottom:14px; margin-bottom:16px; font-weight:700;}
+  .bubble{max-width:60%; padding:10px 15px; border-radius:16px; font-size:.86rem; margin-bottom:10px;}
+  .bubble.them{background:var(--surface-soft);}
+  .bubble.me{background:var(--bg-2); color:#fff; margin-left:auto;}
+  .chat-input{margin-top:auto; display:flex; gap:10px;}
+  .chat-input input{flex:1; border:1px solid var(--line); border-radius:14px; padding:12px 16px; font-family:inherit; outline:none;}
+  .chat-input button{background:var(--accent); border:none; border-radius:14px; padding:0 20px; font-weight:700; cursor:pointer;}
+
+  .pay-summary{display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-bottom:22px;}
+  .kpi-label{color:var(--ink-soft); font-size:.78rem; font-weight:600; text-transform:uppercase;}
+  .kpi-value{font-size:1.7rem; font-weight:700; margin-top:6px;}
+
+  .chart-grid{display:grid; grid-template-columns:1.5fr 1fr; gap:20px;}
+  @media(max-width:1100px){.chart-grid{grid-template-columns:1fr;}}
+  .chart-box{height:280px;}
+
+  .settings-grid{display:grid; grid-template-columns:1fr 1fr; gap:20px;}
+  @media(max-width:1000px){.settings-grid{grid-template-columns:1fr;}}
+  .field{margin-bottom:16px;}
+  .field label{display:block; font-size:.78rem; font-weight:600; color:var(--ink-soft); margin-bottom:6px;}
+  .field input, .field select{width:100%; padding:11px 14px; border-radius:10px; border:1px solid var(--line); font-family:inherit; font-size:.88rem; outline:none;}
+  .toggle-row{display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-bottom:1px solid var(--line);}
+  .toggle-row:last-child{border-bottom:none;}
+  .switch{width:42px; height:24px; background:var(--line); border-radius:20px; position:relative; cursor:pointer; transition:background .2s;}
+  .switch::after{content:""; position:absolute; width:18px; height:18px; background:#fff; border-radius:50%; top:3px; left:3px; transition:left .2s; box-shadow:0 2px 4px rgba(0,0,0,.2);}
+  .switch.on{background:var(--mint);}
+  .switch.on::after{left:21px;}
+  .save-btn{background:var(--ink); color:#fff; border:none; padding:12px 22px; border-radius:12px; font-weight:700; cursor:pointer; margin-top:6px;}
+</style>
+</head>
+<body ng-controller="MainCtrl as vm">
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="brand">
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="none"><path d="M4 9V15M20 9V15M2 12H4M20 12H22M7 6V18M17 6V18M7 12H17" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+    <span>Kerabox <small>Gym Admin</small></span>
+  </div>
+  <nav class="nav-list">
+    <div class="nav-item" ng-class="{active: vm.page==='dashboard'}" ng-click="vm.setPage('dashboard')">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 10L12 3L21 10V20A1 1 0 0 1 20 21H4A1 1 0 0 1 3 20V10Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>Dashboard
+    </div>
+    <div class="nav-item" ng-class="{active: vm.page==='users'}" ng-click="vm.setPage('users')">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="8" r="3" stroke="currentColor" stroke-width="2"/><path d="M3 20C3 16.5 5.5 14 9 14C12.5 14 15 16.5 15 20" stroke="currentColor" stroke-width="2"/><circle cx="17" cy="9" r="2.4" stroke="currentColor" stroke-width="2"/><path d="M15.5 14.3C18.2 14.7 20 16.9 20 20" stroke="currentColor" stroke-width="2"/></svg>Users
+    </div>
+    <div class="nav-item" ng-class="{active: vm.page==='membership'}" ng-click="vm.setPage('membership')">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="12" rx="2" stroke="currentColor" stroke-width="2"/><path d="M3 10H21" stroke="currentColor" stroke-width="2"/></svg>Membership
+    </div>
+    <div class="nav-item" ng-class="{active: vm.page==='trainer'}" ng-click="vm.setPage('trainer')">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6.5 6.5L4 4M17.5 6.5L20 4M4 12H2M22 12H20M6.5 17.5L4 20M17.5 17.5L20 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="6" y="9" width="12" height="6" rx="3" stroke="currentColor" stroke-width="2"/></svg>Trainer
+    </div>
+    <div class="nav-item" ng-class="{active: vm.page==='message'}" ng-click="vm.setPage('message')">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 5H20V16H8L4 19V5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>Message
+    </div>
+    <div class="nav-item" ng-class="{active: vm.page==='payment'}" ng-click="vm.setPage('payment')">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="2" y="6" width="20" height="14" rx="2" stroke="currentColor" stroke-width="2"/><path d="M2 10H22" stroke="currentColor" stroke-width="2"/></svg>Payment
+    </div>
+    <div class="nav-item" ng-class="{active: vm.page==='analytics'}" ng-click="vm.setPage('analytics')">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 20V10M12 20V4M20 20V14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Analytics
+    </div>
+    <div class="nav-item" ng-class="{active: vm.page==='settings'}" ng-click="vm.setPage('settings')">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/><path d="M19.4 13.5C19.7 12.5 19.7 11.5 19.4 10.5L21 9L19 5.5L17.1 6.2C16.3 5.5 15.4 5 14.4 4.7L14 2.7H10L9.6 4.7C8.6 5 7.7 5.5 6.9 6.2L5 5.5L3 9L4.6 10.5C4.3 11.5 4.3 12.5 4.6 13.5L3 15L5 18.5L6.9 17.8C7.7 18.5 8.6 19 9.6 19.3L10 21.3H14L14.4 19.3C15.4 19 16.3 18.5 17.1 17.8L19 18.5L21 15L19.4 13.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>Settings
+    </div>
+  </nav>
+  <div class="sidebar-foot">
+    <div class="pulse-wrap"><span class="dot-live"></span><span style="font-size:.78rem; font-weight:600;">Gym is open</span></div>
+    <p>Peak hours: 6–9 AM & 5–8 PM. 12 members checked in this hour.</p>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <h1>{{ vm.titles[vm.page] }}</h1>
+    <div class="topbar-right">
+      <div class="bell">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="M6 10C6 6.7 8.7 4 12 4C15.3 4 18 6.7 18 10V15L20 18H4L6 15V10Z" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/><path d="M9.5 20A2.5 2.5 0 0 0 14.5 20" stroke="var(--ink)" stroke-width="2"/></svg>
+        <span class="badge">3</span>
+      </div>
+      <div class="who"><span>Welcome back, Admin!</span><div class="avatar">A</div></div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <section class="page" ng-show="vm.page==='dashboard'">
+    <div class="stat-grid">
+      <div class="stat-card" ng-repeat="s in vm.stats">
+        <svg class="ring" viewBox="0 0 56 56">
+          <circle cx="28" cy="28" r="24" stroke="var(--surface-soft)" stroke-width="6" fill="none"/>
+          <circle cx="28" cy="28" r="24" ng-attr-stroke="{{s.color}}" stroke-width="6" fill="none" stroke-linecap="round" stroke-dasharray="150.8" ng-attr-stroke-dashoffset="{{s.offset}}" transform="rotate(-90 28 28)"/>
+        </svg>
+        <div class="stat-text">
+          <div class="label">{{s.label}}</div>
+          <div class="value">{{s.value}}</div>
+          <div class="delta" ng-class="s.trend">{{s.trend === 'up' ? '▲' : '▼'}} {{s.change}}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-grid">
+      <div class="panel">
+        <div class="panel-head"><h2>Attendance</h2><button class="pill-btn">This week</button></div>
+        <table>
+          <thead><tr><th>#</th><th>First</th><th>Last</th><th>Handle</th><th>Check-in</th></tr></thead>
+          <tbody>
+            <tr ng-repeat="a in vm.attendance">
+              <td>{{$index + 1}}</td><td>{{a.first}}</td><td>{{a.last}}</td><td class="handle">{{a.handle}}</td><td>{{a.time}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h2>Top Members</h2><button class="pill-btn">See all</button></div>
+        <table>
+          <thead><tr><th>#</th><th>First</th><th>Last</th><th>Handle</th></tr></thead>
+          <tbody>
+            <tr ng-repeat="m in vm.topMembers">
+              <td><span class="rank" ng-class="{gold: $index===0}">{{$index + 1}}</span></td>
+              <td>{{m.first}}</td><td>{{m.last}}</td><td class="handle">{{m.handle}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- USERS -->
+  <section class="page" ng-show="vm.page==='users'">
+    <div class="toolbar">
+      <div class="search">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="var(--ink-soft)" stroke-width="2"/><path d="M21 21L16.5 16.5" stroke="var(--ink-soft)" stroke-width="2"/></svg>
+        <input placeholder="Search members by name or handle..." ng-model="vm.userSearch">
+      </div>
+      <button class="filter-btn">Status: All</button>
+      <button class="filter-btn">Plan: All</button>
+    </div>
+    <div class="panel">
+      <table>
+        <thead><tr><th>Member</th><th>Handle</th><th>Plan</th><th>Joined</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr ng-repeat="u in vm.users | filter:vm.userSearch">
+            <td><span class="avatar-sm" ng-style="{background: vm.colorFor($index)}">{{u.first.charAt(0)}}{{u.last.charAt(0)}}</span>{{u.first}} {{u.last}}</td>
+            <td class="handle">{{u.handle}}</td>
+            <td>{{u.plan}}</td>
+            <td>{{u.joined}}</td>
+            <td><span class="status-badge" ng-class="u.status">{{u.status | capitalize}}</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- MEMBERSHIP -->
+  <section class="page" ng-show="vm.page==='membership'">
+    <div class="plan-grid">
+      <div class="plan-card" ng-class="{popular: p.popular}" ng-repeat="p in vm.plans">
+        <div class="plan-tag" ng-class="{muted: !p.popular}">{{p.tag}}</div>
+        <h3>{{p.name}}</h3>
+        <div class="plan-price">${{p.price}}<small>/month</small></div>
+        <ul><li ng-repeat="f in p.features">✓ {{f}}</li></ul>
+        <button class="cta">Edit plan</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRAINER -->
+  <section class="page" ng-show="vm.page==='trainer'">
+    <div class="trainer-grid">
+      <div class="trainer-card" ng-repeat="t in vm.trainers">
+        <div class="trainer-avatar" ng-style="{background: vm.colorFor($index)}">{{t.first.charAt(0)}}{{t.last.charAt(0)}}</div>
+        <h3>{{t.first}} {{t.last}}</h3>
+        <div class="spec">{{t.specialty}}</div>
+        <div class="stars">★★★★★ <span style="color:var(--ink-soft); font-family:'Inter'; font-weight:600; margin-left:4px;">{{t.rating}}</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MESSAGE -->
+  <section class="page" ng-show="vm.page==='message'">
+    <div class="msg-layout">
+      <div class="conv-list">
+        <div class="conv-item" ng-class="{active: c.active}" ng-repeat="c in vm.conversations" ng-click="vm.selectConversation(c)">
+          <div class="avatar-sm" ng-style="{background: vm.colorFor($index)}" style="margin-right:0;">{{c.initials}}</div>
+          <div><div class="name">{{c.name}}</div><div class="preview">{{c.preview}}</div></div>
+        </div>
+      </div>
+      <div class="chat-area">
+        <div class="chat-head">{{vm.activeConversation.name}} <span style="color:var(--ink-soft); font-weight:400; font-size:.8rem;">{{vm.activeConversation.handle}}</span></div>
+        <div class="bubble" ng-class="msg.mine ? 'me' : 'them'" ng-repeat="msg in vm.activeConversation.thread">{{msg.text}}</div>
+        <div class="chat-input"><input placeholder="Type a message..." ng-model="vm.draft"><button ng-click="vm.sendMessage()">Send</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PAYMENT -->
+  <section class="page" ng-show="vm.page==='payment'">
+    <div class="pay-summary">
+      <div class="panel"><div class="kpi-label">Revenue this month</div><div class="kpi-value mono">${{vm.revenueThisMonth | number}}</div></div>
+      <div class="panel"><div class="kpi-label">Pending invoices</div><div class="kpi-value mono">{{vm.pendingInvoices}}</div></div>
+      <div class="panel"><div class="kpi-label">Failed payments</div><div class="kpi-value mono">{{vm.failedPayments}}</div></div>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><h2>Recent Transactions</h2><button class="pill-btn">Export CSV</button></div>
+      <table>
+        <thead><tr><th>Member</th><th>Plan</th><th>Amount</th><th>Date</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr ng-repeat="p in vm.payments">
+            <td>{{p.member}}</td><td>{{p.plan}}</td><td class="mono">{{p.amount}}</td><td>{{p.date}}</td>
+            <td><span class="status-badge" ng-class="p.status">{{vm.paymentLabel[p.status]}}</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ANALYTICS -->
+  <section class="page" ng-show="vm.page==='analytics'" chart-renderer="vm.page">
+    <div class="chart-grid" style="margin-bottom:20px;">
+      <div class="panel"><h2 style="margin-bottom:12px;">Weekly Attendance</h2><div class="chart-box"><canvas id="attendanceChart"></canvas></div></div>
+      <div class="panel"><h2 style="margin-bottom:12px;">Membership Split</h2><div class="chart-box"><canvas id="splitChart"></canvas></div></div>
+    </div>
+    <div class="panel"><h2 style="margin-bottom:12px;">Revenue Trend</h2><div class="chart-box"><canvas id="revenueChart"></canvas></div></div>
+  </section>
+
+  <!-- SETTINGS -->
+  <section class="page" ng-show="vm.page==='settings'">
+    <div class="settings-grid">
+      <div class="panel">
+        <h2 style="margin-bottom:16px;">Gym Profile</h2>
+        <div class="field"><label>Gym name</label><input ng-model="vm.settings.gymName"></div>
+        <div class="field"><label>Contact email</label><input ng-model="vm.settings.email"></div>
+        <div class="field"><label>Time zone</label>
+          <select ng-model="vm.settings.timezone">
+            <option>GMT+5:30 — New Delhi</option>
+            <option>GMT+0 — London</option>
+            <option>GMT-5 — New York</option>
+          </select>
+        </div>
+        <button class="save-btn" ng-click="vm.saveSettings()">Save changes</button>
+      </div>
+      <div class="panel">
+        <h2 style="margin-bottom:8px;">Notifications</h2>
+        <div class="toggle-row" ng-repeat="n in vm.notifications">
+          <span>{{n.label}}</span>
+          <div class="switch" ng-class="{on: n.enabled}" ng-click="n.enabled = !n.enabled"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+angular.module('keraboxApp', [])
+
+.filter('capitalize', function(){
+  return function(input){
+    if(!input) return '';
+    return input.charAt(0).toUpperCase() + input.slice(1);
+  };
+})
+
+// Directive that (re)draws the Chart.js canvases whenever the Analytics page becomes active
+.directive('chartRenderer', ['$timeout', function($timeout){
+  return {
+    restrict:'A',
+    link: function(scope, element, attrs){
+      var drawn = false;
+      scope.$watch(attrs.chartRenderer, function(val){
+        if(val === 'analytics' && !drawn){
+          $timeout(function(){
+            drawn = true;
+            var chartFont = {family:'Inter'};
+
+            new Chart(document.getElementById('attendanceChart'), {
+              type:'bar',
+              data:{labels:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+                datasets:[{label:'Check-ins', data:[62,74,58,80,90,110,70], backgroundColor:'#7C4DFF', borderRadius:8}]},
+              options:{plugins:{legend:{display:false}}, scales:{x:{grid:{display:false}, ticks:{font:chartFont}}, y:{grid:{color:'#F0EDFB'}, ticks:{font:chartFont}}}}
+            });
+
+            new Chart(document.getElementById('splitChart'), {
+              type:'doughnut',
+              data:{labels:['Starter','Pro','Elite'], datasets:[{data:[38,45,17], backgroundColor:['#2FD3A4','#7C4DFF','#FFB020'], borderWidth:0}]},
+              options:{plugins:{legend:{position:'bottom', labels:{font:chartFont, boxWidth:10, padding:14}}}, cutout:'65%'}
+            });
+
+            new Chart(document.getElementById('revenueChart'), {
+              type:'line',
+              data:{labels:['Feb','Mar','Apr','May','Jun','Jul'],
+                datasets:[{label:'Revenue', data:[14200,15800,17650,19200,21400,24860], borderColor:'#7C4DFF', backgroundColor:'rgba(124,77,255,.12)', fill:true, tension:.4, pointRadius:4, pointBackgroundColor:'#7C4DFF'}]},
+              options:{plugins:{legend:{display:false}}, scales:{x:{grid:{display:false}, ticks:{font:chartFont}}, y:{grid:{color:'#F0EDFB'}, ticks:{font:chartFont, callback: function(v){ return '$' + (v/1000) + 'k'; }}}}}
+            });
+          }, 0);
+        }
+      });
+    }
+  };
+}])
+
+.controller('MainCtrl', ['$scope', function($scope){
+  var vm = this;
+
+  vm.page = 'dashboard';
+  vm.titles = {dashboard:'Dashboard', users:'Users', membership:'Membership', trainer:'Trainer', message:'Message', payment:'Payment', analytics:'Analytics', settings:'Settings'};
+  vm.setPage = function(p){ vm.page = p; };
+
+  vm.colors = ['#7C4DFF','#FFB020','#2FD3A4','#FF5C7A','#4F46E5','#F97316'];
+  vm.colorFor = function(i){ return vm.colors[i % vm.colors.length]; };
+
+  // ---- Dashboard stats ----
+  vm.stats = [
+    {label:'Active Members', value:100, color:'var(--mint)', offset:30, trend:'up', change:'8% this month'},
+    {label:'Inactive Members', value:10, color:'var(--rose)', offset:130, trend:'down', change:'2% this month'},
+    {label:'All Members', value:456, color:'var(--bg-2)', offset:15, trend:'up', change:'5% this month'},
+    {label:'New Members', value:15, color:'var(--accent)', offset:80, trend:'up', change:'12% this month'},
+    {label:'Trainers', value:5, color:'var(--ink)', offset:100, trend:'up', change:'1 new hire'}
+  ];
+
+  vm.attendance = [
+    {first:'Mark', last:'Otto', handle:'@mdo', time:'6:04 AM'},
+    {first:'Jacob', last:'Thornton', handle:'@fat', time:'6:20 AM'},
+    {first:'Larry', last:'the Bird', handle:'@twitter', time:'7:12 AM'},
+    {first:'Elena', last:'Cruz', handle:'@elenac', time:'7:45 AM'},
+    {first:'Sam', last:'Reyes', handle:'@samr', time:'8:02 AM'}
+  ];
+
+  vm.topMembers = [
+    {first:'Mark', last:'Otto', handle:'@mdo'},
+    {first:'Jacob', last:'Thornton', handle:'@fat'},
+    {first:'Larry', last:'the Bird', handle:'@twitter'}
+  ];
+
+  // ---- Users ----
+  vm.users = [
+    {first:'Mark', last:'Otto', handle:'@mdo', plan:'Pro', joined:'Jan 12, 2024', status:'active'},
+    {first:'Jacob', last:'Thornton', handle:'@fat', plan:'Elite', joined:'Feb 3, 2024', status:'active'},
+    {first:'Larry', last:'the Bird', handle:'@twitter', plan:'Starter', joined:'Mar 18, 2024', status:'active'},
+    {first:'Elena', last:'Cruz', handle:'@elenac', plan:'Pro', joined:'Apr 22, 2024', status:'pending'},
+    {first:'Sam', last:'Reyes', handle:'@samr', plan:'Starter', joined:'May 9, 2024', status:'inactive'},
+    {first:'Priya', last:'Nair', handle:'@priyan', plan:'Elite', joined:'Jun 14, 2024', status:'active'},
+    {first:'Diego', last:'Alvarez', handle:'@dalvarez', plan:'Pro', joined:'Jul 1, 2024', status:'active'},
+    {first:'Naomi', last:'Klein', handle:'@naomik', plan:'Starter', joined:'Jul 20, 2024', status:'inactive'}
+  ];
+  vm.userSearch = '';
+
+  // ---- Membership plans ----
+  vm.plans = [
+    {name:'Starter', tag:'BASIC', price:29, popular:false, features:['Gym floor access','1 guest pass / month','Locker access']},
+    {name:'Pro', tag:'MOST POPULAR', price:59, popular:true, features:['Everything in Starter','Unlimited classes','2 trainer sessions','Sauna & recovery zone']},
+    {name:'Elite', tag:'ELITE', price:99, popular:false, features:['Everything in Pro','Unlimited trainer sessions','Nutrition plan','Priority booking']}
+  ];
+
+  // ---- Trainers ----
+  vm.trainers = [
+    {first:'Alex', last:'Morgan', specialty:'Strength & Conditioning', rating:'4.9'},
+    {first:'Riya', last:'Sharma', specialty:'Yoga & Mobility', rating:'5.0'},
+    {first:'Chris', last:'Diaz', specialty:'HIIT & Cardio', rating:'4.8'},
+    {first:'Wei', last:'Zhang', specialty:'Olympic Lifting', rating:'4.7'}
+  ];
+
+  // ---- Messages ----
+  vm.conversations = [
+    {name:'Mark Otto', handle:'@mdo', initials:'MO', preview:'Perfect, thank you!', active:true,
+      thread:[
+        {text:'Hey, is the 6 AM HIIT class still on for tomorrow?', mine:false},
+        {text:'Yes! Spot confirmed, see you there 💪', mine:true},
+        {text:'Perfect, thank you!', mine:false}
+      ]},
+    {name:'Jacob Thornton', handle:'@fat', initials:'JT', preview:'See you at 7 for spin class', active:false,
+      thread:[{text:'See you at 7 for spin class', mine:false}]},
+    {name:'Larry the Bird', handle:'@twitter', initials:'LB', preview:'Can I freeze my membership?', active:false,
+      thread:[{text:'Can I freeze my membership?', mine:false}]},
+    {name:'Elena Cruz', handle:'@elenac', initials:'EC', preview:'Invoice received, thanks!', active:false,
+      thread:[{text:'Invoice received, thanks!', mine:false}]}
+  ];
+  vm.activeConversation = vm.conversations[0];
+  vm.draft = '';
+  vm.selectConversation = function(c){
+    vm.conversations.forEach(function(item){ item.active = false; });
+    c.active = true;
+    vm.activeConversation = c;
+  };
+  vm.sendMessage = function(){
+    if(!vm.draft) return;
+    vm.activeConversation.thread.push({text: vm.draft, mine:true});
+    vm.activeConversation.preview = vm.draft;
+    vm.draft = '';
+  };
+
+  // ---- Payments ----
+  vm.revenueThisMonth = 24860;
+  vm.pendingInvoices = 7;
+  vm.failedPayments = 2;
+  vm.paymentLabel = {active:'Paid', inactive:'Failed', pending:'Pending'};
+  vm.payments = [
+    {member:'Mark Otto', plan:'Pro', amount:'$59.00', date:'Jul 24, 2026', status:'active'},
+    {member:'Jacob Thornton', plan:'Elite', amount:'$99.00', date:'Jul 23, 2026', status:'active'},
+    {member:'Sam Reyes', plan:'Starter', amount:'$29.00', date:'Jul 22, 2026', status:'inactive'},
+    {member:'Priya Nair', plan:'Elite', amount:'$99.00', date:'Jul 21, 2026', status:'pending'},
+    {member:'Elena Cruz', plan:'Pro', amount:'$59.00', date:'Jul 20, 2026', status:'active'}
+  ];
+
+  // ---- Settings ----
+  vm.settings = {gymName:'Kerabox Gym', email:'admin@kerabox.gym', timezone:'GMT+5:30 — New Delhi'};
+  vm.notifications = [
+    {label:'New member sign-ups', enabled:true},
+    {label:'Payment failures', enabled:true},
+    {label:'Weekly summary email', enabled:false},
+    {label:'Trainer schedule changes', enabled:true}
+  ];
+  vm.saveSettings = function(){
+    alert('Settings saved for ' + vm.settings.gymName);
+  };
+}]);
+</script>
+</body>
+</html>
