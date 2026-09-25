@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gym.kerabox.constant.UserConstant;
-import com.gym.kerabox.entity.UserEntity;
+import com.gym.kerabox.entity.MembersEntity;
 import com.gym.kerabox.response.ApiResponse;
 import com.gym.kerabox.service.DashboardService;
 
@@ -32,7 +32,7 @@ public class DashboardController {
 	public ResponseEntity<?> getActiveUser(@RequestParam("status") String status) {
 		ApiResponse apiResponse = new ApiResponse();
 		try {
-			List<UserEntity> getUser = dashboardService.getActiveUser(status);
+			List<MembersEntity> getUser = dashboardService.getActiveUser(status);
 			apiResponse.setResponseCode(200);
 			apiResponse.setCount(getUser.size());
 			apiResponse.setMessage("get active User successfully.");
@@ -50,7 +50,7 @@ public class DashboardController {
 	public ResponseEntity<?> getInactiveUser(@RequestParam("status") String status) {
 		ApiResponse apiResponse = new ApiResponse();
 		try {
-			List<UserEntity> getUser = dashboardService.getActiveUser(status);
+			List<MembersEntity> getUser = dashboardService.getActiveUser(status);
 			apiResponse.setResponseCode(200);
 			apiResponse.setCount(getUser.size());
 			apiResponse.setMessage("get inactive User successfully.");

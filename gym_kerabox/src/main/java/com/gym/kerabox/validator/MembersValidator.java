@@ -7,11 +7,11 @@ package com.gym.kerabox.validator;
  * @version 1.0
  * @since 2026-03-17
  */
-import com.gym.kerabox.dto.UserDto;
+import com.gym.kerabox.dto.MembersDto;
 
-public class UserValidator {
+public class MembersValidator {
 
-	public static String saveUserValidation(UserDto userDto) {
+	public static String saveUserValidation(MembersDto userDto) {
 
 		StringBuilder message = new StringBuilder();
 

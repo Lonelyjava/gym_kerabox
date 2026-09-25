@@ -13,15 +13,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.gym.kerabox.entity.UserEntity;
+import com.gym.kerabox.entity.MembersEntity;
 
 @Repository
-public interface UserReposistory extends JpaRepository<UserEntity,Long> {
+public interface MembersReposistory extends JpaRepository<MembersEntity,Long> {
 
 	@Query("select u from UserEntity u where u.mobile=:mobile or u.email=:email")
-	public UserEntity checkUserAlreadyExist(@Param("mobile")String mobile,@Param("email") String email);
+	public MembersEntity checkUserAlreadyExist(@Param("mobile")String mobile,@Param("email") String email);
 
-	public List<UserEntity> searchUserByFirstnameOrMobileOrEmail(String firstname, String mobile, String email);
+	public List<MembersEntity> searchUserByFirstnameOrMobileOrEmail(String firstname, String mobile, String email);
 
-	public List<UserEntity> findByStatus(String status);
+	public List<MembersEntity> findByStatus(String status);
 }

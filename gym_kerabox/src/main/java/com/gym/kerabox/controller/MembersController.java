@@ -27,14 +27,14 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gym.kerabox.constant.UserConstant;
-import com.gym.kerabox.dto.UserDto;
-import com.gym.kerabox.entity.UserEntity;
+import com.gym.kerabox.dto.MembersDto;
+import com.gym.kerabox.entity.MembersEntity;
 import com.gym.kerabox.exceptionhandler.ErrorResponse;
 import com.gym.kerabox.exceptionhandler.NoSuchUserExistsException;
 import com.gym.kerabox.exceptionhandler.UserAlreadyExistsException;
 import com.gym.kerabox.response.ApiResponse;
-import com.gym.kerabox.service.UserService;
-import com.gym.kerabox.validator.UserValidator;
+import com.gym.kerabox.service.MembersService;
+import com.gym.kerabox.validator.MembersValidator;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -43,36 +43,36 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RequestMapping(UserConstant.GYM_KERABOX)
 @Tag(name = "User Controller", description = "User management APIs")
 //@Slf4j
-public class UserController {
+public class MembersController {
 
-	private static final Logger logger = Logger.getLogger(UserController.class.getName());
+	private static final Logger logger = Logger.getLogger(MembersController.class.getName());
 
 	@Autowired
-	UserService userService;
+	MembersService userService;
 
 	@PostMapping(UserConstant.SAVE_USER)
 	@Operation(summary = "Create new user")
-	public ResponseEntity<?> saveUserDetails(@RequestBody UserDto userDto) {
+	public ResponseEntity<?> saveUserDetails(@RequestBody MembersDto userDto) {
 		ApiResponse apiResponse = new ApiResponse();
 		try {
 
-			String userValidate = UserValidator.saveUserValidation(userDto);
+			String userValidate = MembersValidator.saveUserValidation(userDto);
 			if (userValidate != null) {
 				apiResponse.setResponseCode(200);
 				apiResponse.setMessage(userValidate);
 				return new ResponseEntity<>(apiResponse, HttpStatus.OK);
 			}
 
-			UserEntity checkedUser = userService.checkedUserAlreadyExist(userDto.getMobile(), userDto.getEmail());
+			MembersEntity checkedUser = userService.checkedUserAlreadyExist(userDto.getMobile(), userDto.getEmail());
 			if (checkedUser != null) {
 //				apiResponse.setCount(countUser);
 				apiResponse.setResponseCode(200);
 				apiResponse.setMessage("dupliate data not allowed.");
 //				apiResponse.setErrorMessage(false);
-				apiResponse.setData(new UserEntity(checkedUser.getMobile(), checkedUser.getEmail()));
+				apiResponse.setData(new MembersEntity(checkedUser.getMobile(), checkedUser.getEmail()));
 				return new ResponseEntity<>(apiResponse, HttpStatus.OK);
 			} else {
-				UserEntity saveUser = userService.saveUser(userDto);
+				MembersEntity saveUser = userService.saveUser(userDto);
 				Long countUser = userService.getUsetCount();
 				apiResponse.setCount(countUser);
 				apiResponse.setResponseCode(200);
@@ -94,7 +94,7 @@ public class UserController {
 	public ResponseEntity<?> getAllUsers() {
 		ApiResponse apiResponse = new ApiResponse();
 		try {
-			List<UserEntity> getUser = userService.getUser();
+			List<MembersEntity> getUser = userService.getUser();
 			if (getUser != null && !getUser.isEmpty()) {
 				apiResponse.setResponseCode(200);
 				apiResponse.setCount(getUser.size());
@@ -115,10 +115,10 @@ public class UserController {
 
 	@PutMapping(UserConstant.UPDATE_USER)
 	@Operation(summary = "Update user details")
-	public ResponseEntity<?> getUser(@RequestBody UserDto userDto) {
+	public ResponseEntity<?> getUser(@RequestBody MembersDto userDto) {
 		ApiResponse apiResponse = new ApiResponse();
 		try {
-			UserDto getUser = userService.updateUser(userDto);
+			MembersDto getUser = userService.updateUser(userDto);
 			apiResponse.setResponseCode(200);
 			apiResponse.setCount(getUser.getId());
 			apiResponse.setMessage("Update User successfully.");
@@ -140,7 +140,7 @@ public class UserController {
 		try {
 			if (firstname != null && !firstname.isEmpty() || mobile != null && !mobile.isEmpty()
 					|| email != null && !email.isEmpty()) {
-				List<UserEntity> getUser = userService.searchUser(firstname, mobile, email);
+				List<MembersEntity> getUser = userService.searchUser(firstname, mobile, email);
 				if (getUser != null && !getUser.isEmpty()) {
 					apiResponse.setResponseCode(200);
 					apiResponse.setMessage("User search successfully.");

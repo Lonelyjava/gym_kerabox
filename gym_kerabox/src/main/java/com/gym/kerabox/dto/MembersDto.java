@@ -7,7 +7,7 @@ package com.gym.kerabox.dto;
  * @version 1.0
  * @since 2026-03-17
  */
-public class UserDto {
+public class MembersDto {
 	
 	private long id;
 	private String firstname;

@@ -14,29 +14,29 @@ import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.gym.kerabox.controller.UserController;
+import com.gym.kerabox.controller.MembersController;
 import com.gym.kerabox.dto.SearchUserDto;
-import com.gym.kerabox.dto.UserDto;
+import com.gym.kerabox.dto.MembersDto;
 import com.gym.kerabox.entity.AddressEntity;
 import com.gym.kerabox.entity.Employee;
-import com.gym.kerabox.entity.UserEntity;
+import com.gym.kerabox.entity.MembersEntity;
 import com.gym.kerabox.reposistory.EmployeeReposistory;
-import com.gym.kerabox.reposistory.UserReposistory;
-import com.gym.kerabox.service.UserService;
+import com.gym.kerabox.reposistory.MembersReposistory;
+import com.gym.kerabox.service.MembersService;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class MembersServiceImpl implements MembersService {
 
-	private static final Logger logger = Logger.getLogger(UserController.class.getName());
+	private static final Logger logger = Logger.getLogger(MembersController.class.getName());
 	@Autowired
-	UserReposistory userReposistory;
+	MembersReposistory userReposistory;
 
 	@Autowired
 	EmployeeReposistory employeeReposistory;
 
 	@Override
-	public UserEntity saveUser(UserDto userDto) {
-		UserEntity userEntity = new UserEntity();
+	public MembersEntity saveUser(MembersDto userDto) {
+		MembersEntity userEntity = new MembersEntity();
 		AddressEntity addressEntity = new AddressEntity();
 		userEntity.setFirstname(userDto.getFirstname());
 		userEntity.setLastname(userDto.getLastname());
@@ -76,13 +76,13 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<UserEntity> getUser() {
+	public List<MembersEntity> getUser() {
 		return userReposistory.findAll();
 	}
 
 	@Override
-	public List<UserEntity> searchUser(String firstname, String mobile, String email) {
-		List<UserEntity> userList = null;
+	public List<MembersEntity> searchUser(String firstname, String mobile, String email) {
+		List<MembersEntity> userList = null;
 		if (firstname != null && !firstname.isEmpty() || mobile != null && !mobile.isEmpty()
 				|| email != null && !email.isEmpty()) {
 			userList = userReposistory.searchUserByFirstnameOrMobileOrEmail(firstname, mobile, email);
@@ -106,17 +106,17 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserEntity checkedUserAlreadyExist(String mobile, String email) {
+	public MembersEntity checkedUserAlreadyExist(String mobile, String email) {
 		// TODO Auto-generated method stub
 
-		UserEntity checkedUser = userReposistory.checkUserAlreadyExist(mobile, email);
+		MembersEntity checkedUser = userReposistory.checkUserAlreadyExist(mobile, email);
 		return checkedUser;
 	}
 
 	@Override
-	public UserDto updateUser(UserDto userDto) {
+	public MembersDto updateUser(MembersDto userDto) {
 		if (userDto != null) {
-			UserEntity userEntity = userReposistory.findById(userDto.getId())
+			MembersEntity userEntity = userReposistory.findById(userDto.getId())
 					.orElseThrow(() -> new RuntimeException("User not found with id :" + userDto.getId()));
 			userEntity.setFirstname(userDto.getFirstname());
 			userEntity.setLastname(userDto.getLastname());
