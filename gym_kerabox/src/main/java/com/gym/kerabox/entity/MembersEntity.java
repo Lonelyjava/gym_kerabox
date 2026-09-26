@@ -15,7 +15,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name ="gym_kerabox_User")
+@Table(name ="gym_kerabox_members")
 public class MembersEntity  extends  BaseEntity{
 
 

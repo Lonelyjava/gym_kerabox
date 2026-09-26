@@ -18,7 +18,7 @@ import com.gym.kerabox.entity.MembersEntity;
 @Repository
 public interface MembersReposistory extends JpaRepository<MembersEntity,Long> {
 
-	@Query("select u from UserEntity u where u.mobile=:mobile or u.email=:email")
+	@Query("select u from MembersEntity u where u.mobile=:mobile or u.email=:email")
 	public MembersEntity checkUserAlreadyExist(@Param("mobile")String mobile,@Param("email") String email);
 
 	public List<MembersEntity> searchUserByFirstnameOrMobileOrEmail(String firstname, String mobile, String email);

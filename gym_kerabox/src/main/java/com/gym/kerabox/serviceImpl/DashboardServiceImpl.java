@@ -19,7 +19,7 @@ import com.gym.kerabox.service.DashboardService;
 public class DashboardServiceImpl implements DashboardService{
 
 	@Autowired
-	MembersReposistory userReposistory;
+	MembersReposistory membersReposistory;
 	
 	 @Autowired
 	 private SystemLogRepository repository;
@@ -28,7 +28,7 @@ public class DashboardServiceImpl implements DashboardService{
 	public List<MembersEntity> getActiveUser(String status) {
 		// TODO Auto-generated method stub
 		DashboardDto dashboardDto = new DashboardDto();
-		List<MembersEntity> userEntity = userReposistory.findByStatus(status);
+		List<MembersEntity> userEntity = membersReposistory.findByStatus(status);
 		saveServerIp();
 		return userEntity;
 	}

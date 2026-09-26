@@ -41,14 +41,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping(UserConstant.GYM_KERABOX)
-@Tag(name = "User Controller", description = "User management APIs")
+@Tag(name = "Members Controller", description = "User management APIs")
 //@Slf4j
 public class MembersController {
 
 	private static final Logger logger = Logger.getLogger(MembersController.class.getName());
 
 	@Autowired
-	MembersService userService;
+	MembersService membersService;
 
 	@PostMapping(UserConstant.SAVE_USER)
 	@Operation(summary = "Create new user")
@@ -63,7 +63,7 @@ public class MembersController {
 				return new ResponseEntity<>(apiResponse, HttpStatus.OK);
 			}
 
-			MembersEntity checkedUser = userService.checkedUserAlreadyExist(userDto.getMobile(), userDto.getEmail());
+			MembersEntity checkedUser = membersService.checkedUserAlreadyExist(userDto.getMobile(), userDto.getEmail());
 			if (checkedUser != null) {
 //				apiResponse.setCount(countUser);
 				apiResponse.setResponseCode(200);
@@ -72,8 +72,8 @@ public class MembersController {
 				apiResponse.setData(new MembersEntity(checkedUser.getMobile(), checkedUser.getEmail()));
 				return new ResponseEntity<>(apiResponse, HttpStatus.OK);
 			} else {
-				MembersEntity saveUser = userService.saveUser(userDto);
-				Long countUser = userService.getUsetCount();
+				MembersEntity saveUser = membersService.saveUser(userDto);
+				Long countUser = membersService.getUsetCount();
 				apiResponse.setCount(countUser);
 				apiResponse.setResponseCode(200);
 				apiResponse.setMessage("Data saved successfully.");
@@ -94,7 +94,7 @@ public class MembersController {
 	public ResponseEntity<?> getAllUsers() {
 		ApiResponse apiResponse = new ApiResponse();
 		try {
-			List<MembersEntity> getUser = userService.getUser();
+			List<MembersEntity> getUser = membersService.getUser();
 			if (getUser != null && !getUser.isEmpty()) {
 				apiResponse.setResponseCode(200);
 				apiResponse.setCount(getUser.size());
@@ -118,7 +118,7 @@ public class MembersController {
 	public ResponseEntity<?> getUser(@RequestBody MembersDto userDto) {
 		ApiResponse apiResponse = new ApiResponse();
 		try {
-			MembersDto getUser = userService.updateUser(userDto);
+			MembersDto getUser = membersService.updateUser(userDto);
 			apiResponse.setResponseCode(200);
 			apiResponse.setCount(getUser.getId());
 			apiResponse.setMessage("Update User successfully.");
@@ -140,7 +140,7 @@ public class MembersController {
 		try {
 			if (firstname != null && !firstname.isEmpty() || mobile != null && !mobile.isEmpty()
 					|| email != null && !email.isEmpty()) {
-				List<MembersEntity> getUser = userService.searchUser(firstname, mobile, email);
+				List<MembersEntity> getUser = membersService.searchUser(firstname, mobile, email);
 				if (getUser != null && !getUser.isEmpty()) {
 					apiResponse.setResponseCode(200);
 					apiResponse.setMessage("User search successfully.");
@@ -169,7 +169,7 @@ public class MembersController {
 		ApiResponse apiResponse = new ApiResponse();
 		try {
 			if (id != 0) {
-				userService.deleteUser(id);
+				membersService.deleteUser(id);
 				apiResponse.setResponseCode(200);
 				apiResponse.setMessage("User Id:" + id + " Deleted successfully.");
 				apiResponse.setErrorMessage(false);

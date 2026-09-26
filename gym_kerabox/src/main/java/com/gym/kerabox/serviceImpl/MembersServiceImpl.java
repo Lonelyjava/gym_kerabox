@@ -29,7 +29,7 @@ public class MembersServiceImpl implements MembersService {
 
 	private static final Logger logger = Logger.getLogger(MembersController.class.getName());
 	@Autowired
-	MembersReposistory userReposistory;
+	MembersReposistory membersReposistory;
 
 	@Autowired
 	EmployeeReposistory employeeReposistory;
@@ -57,7 +57,7 @@ public class MembersServiceImpl implements MembersService {
 		addressEntity.setUpdatedBy(LocalDate.now());
 		addressEntity.setUserEntity(userEntity);
 		userEntity.setAddress(addressEntity);
-		userReposistory.save(userEntity);
+		membersReposistory.save(userEntity);
 		System.out.println("data save successfully.");
 		return userEntity;
 	}
@@ -77,7 +77,7 @@ public class MembersServiceImpl implements MembersService {
 
 	@Override
 	public List<MembersEntity> getUser() {
-		return userReposistory.findAll();
+		return membersReposistory.findAll();
 	}
 
 	@Override
@@ -85,7 +85,7 @@ public class MembersServiceImpl implements MembersService {
 		List<MembersEntity> userList = null;
 		if (firstname != null && !firstname.isEmpty() || mobile != null && !mobile.isEmpty()
 				|| email != null && !email.isEmpty()) {
-			userList = userReposistory.searchUserByFirstnameOrMobileOrEmail(firstname, mobile, email);
+			userList = membersReposistory.searchUserByFirstnameOrMobileOrEmail(firstname, mobile, email);
 		} else {
 
 			throw new RuntimeException(
@@ -96,27 +96,27 @@ public class MembersServiceImpl implements MembersService {
 
 	@Override
 	public void deleteUser(long id) {
-	 	userReposistory.deleteById(id);
+	 	membersReposistory.deleteById(id);
 	}
 
 	@Override
 	public Long getUsetCount() {
 		// TODO Auto-generated method stub
-		return userReposistory.count();
+		return membersReposistory.count();
 	}
 
 	@Override
 	public MembersEntity checkedUserAlreadyExist(String mobile, String email) {
 		// TODO Auto-generated method stub
 
-		MembersEntity checkedUser = userReposistory.checkUserAlreadyExist(mobile, email);
+		MembersEntity checkedUser = membersReposistory.checkUserAlreadyExist(mobile, email);
 		return checkedUser;
 	}
 
 	@Override
 	public MembersDto updateUser(MembersDto userDto) {
 		if (userDto != null) {
-			MembersEntity userEntity = userReposistory.findById(userDto.getId())
+			MembersEntity userEntity = membersReposistory.findById(userDto.getId())
 					.orElseThrow(() -> new RuntimeException("User not found with id :" + userDto.getId()));
 			userEntity.setFirstname(userDto.getFirstname());
 			userEntity.setLastname(userDto.getLastname());
@@ -136,7 +136,7 @@ public class MembersServiceImpl implements MembersService {
 			addressEntity.setLoggedInBy("kundan");
 			addressEntity.setUpdatedBy(LocalDate.now());
 			userEntity.setAddress(addressEntity);
-			userReposistory.save(userEntity);
+			membersReposistory.save(userEntity);
 			logger.info("update user successfully @updateUser");
 
 		}
