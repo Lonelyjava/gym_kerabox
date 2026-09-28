@@ -28,7 +28,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/api/v1/auth-service")
-@CrossOrigin
+@CrossOrigin()
 @Tag(name = "Auth Controller", description = "User management APIs")
 public class AuthenticationController {
 
@@ -40,8 +40,8 @@ public class AuthenticationController {
 	@Operation(summary = "register new user")
 	public ResponseEntity<?> register(@RequestBody RegisterRequest registerRequest) {
 		try {
-			String response = authenticationService.register(registerRequest);
-			return ResponseEntity.ok(response);
+			String message = authenticationService.register(registerRequest);
+			return ResponseEntity.ok(message);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -52,6 +52,8 @@ public class AuthenticationController {
 	public ResponseEntity<AuthenticationResponse> authenticate(
 			@RequestBody AuthenticationRequest authenticationRequest) {
 		try {
+			
+			System.out.println("authenticationRequest" +authenticationRequest.getEmail() +"---"+authenticationRequest.getPassword());
 			AuthenticationResponse response = authenticationService.authenticate(authenticationRequest);
 			return ResponseEntity.ok(response);
 		} catch (Exception e) {
