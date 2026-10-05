@@ -72,7 +72,7 @@ public class AuthenticationService {
 		String jwtToken = jwtService.generateToken(user);
 		String refreshToken = jwtService.generateRefresh(new HashMap<>(), user);
 		AuthenticationResponse response = new AuthenticationResponse();
-		response.setAuthenticationToken(jwtToken);
+		response.setToken(jwtToken);
 		response.setRefreshToken(refreshToken);
 		return response;
 	}
@@ -84,7 +84,7 @@ public class AuthenticationService {
 		String jwtToken = jwtService.generateToken(user);
 		String newRefreshToken = jwtService.generateRefresh(new HashMap<>(), user);
 		AuthenticationResponse response = new AuthenticationResponse();
-		response.setAuthenticationToken(jwtToken);
+		response.setToken(jwtToken);
 		response.setRefreshToken(newRefreshToken);
 		return response;
 	}

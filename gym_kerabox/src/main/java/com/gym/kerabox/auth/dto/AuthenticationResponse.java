@@ -17,15 +17,17 @@ import lombok.NoArgsConstructor;
 //@AllArgsConstructor
 //@NoArgsConstructor
 public class AuthenticationResponse {
-	private String authenticationToken;
+	private String token;
 	private String refreshToken;
 
-	public String getAuthenticationToken() {
-		return authenticationToken;
+	
+
+	public String getToken() {
+		return token;
 	}
 
-	public void setAuthenticationToken(String authenticationToken) {
-		this.authenticationToken = authenticationToken;
+	public void setToken(String token) {
+		this.token = token;
 	}
 
 	public String getRefreshToken() {
