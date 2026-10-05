@@ -22,6 +22,7 @@ import com.gym.kerabox.auth.dto.AuthenticationRequest;
 import com.gym.kerabox.auth.dto.AuthenticationResponse;
 import com.gym.kerabox.auth.dto.RegisterRequest;
 import com.gym.kerabox.auth.service.AuthenticationService;
+import com.gym.kerabox.response.ApiResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -39,9 +40,17 @@ public class AuthenticationController {
 	@PostMapping("/register")
 	@Operation(summary = "register new user")
 	public ResponseEntity<?> register(@RequestBody RegisterRequest registerRequest) {
+		
+		ApiResponse apiResponse = new ApiResponse();
 		try {
 			String message = authenticationService.register(registerRequest);
-			return ResponseEntity.ok(message);
+			apiResponse.setMessage(message);
+			apiResponse.setCount(1);
+			apiResponse.setErrorMessage(false);
+			apiResponse.setResponseCode(200);
+			apiResponse.setData(message);
+			return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+//			return ResponseEntity.ok(message);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
