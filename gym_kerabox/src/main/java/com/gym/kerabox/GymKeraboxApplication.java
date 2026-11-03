@@ -61,6 +61,7 @@ public class GymKeraboxApplication {
 				System.out.println("super admin already existed");
 			}
 
+				System.out.println("UI Url :"+"http://localhost:8889/swagger-ui/index.html#/");
 		};
 	}
 }
