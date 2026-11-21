@@ -3,6 +3,7 @@ package com.gym.kerabox.serviceImpl;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,7 @@ public class DashboardServiceImpl implements DashboardService{
 	 private SystemLogRepository repository;
 	 
 	@Override
-	public List<MembersEntity> getActiveUser(String status) {
+	public List<MembersEntity> getActiveMembers(String status) {
 		// TODO Auto-generated method stub
 		DashboardDto dashboardDto = new DashboardDto();
 		List<MembersEntity> userEntity = membersReposistory.findByStatus(status);
@@ -47,5 +48,17 @@ public class DashboardServiceImpl implements DashboardService{
             e.printStackTrace(); 
         }
     }
+
+	@Override
+	public List<MembersEntity> getAllMembers() {
+		// TODO Auto-generated method stub
+		return membersReposistory.findAll();
+	}
+
+	@Override
+	public Optional<MembersEntity> getNewMembers() {
+		Optional<MembersEntity> topByOrderByIdDesc = membersReposistory.findTopByOrderByIdDesc();
+		return topByOrderByIdDesc;
+	}
 
 }

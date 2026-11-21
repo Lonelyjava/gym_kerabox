@@ -1,5 +1,6 @@
 package com.gym.kerabox.reposistory;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * UserController class for managing users.
@@ -24,4 +25,6 @@ public interface MembersReposistory extends JpaRepository<MembersEntity,Long> {
 	public List<MembersEntity> searchUserByFirstnameOrMobileOrEmail(String firstname, String mobile, String email);
 
 	public List<MembersEntity> findByStatus(String status);
+	
+	 Optional<MembersEntity> findTopByOrderByIdDesc();
 }

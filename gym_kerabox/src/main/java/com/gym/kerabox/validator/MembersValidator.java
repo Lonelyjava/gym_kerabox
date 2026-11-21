@@ -11,7 +11,7 @@ import com.gym.kerabox.dto.MembersDto;
 
 public class MembersValidator {
 
-	public static String saveUserValidation(MembersDto userDto) {
+	public static String saveMembersValidation(MembersDto userDto) {
 
 		StringBuilder message = new StringBuilder();
 

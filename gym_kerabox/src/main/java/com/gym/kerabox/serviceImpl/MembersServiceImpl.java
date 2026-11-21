@@ -18,9 +18,7 @@ import com.gym.kerabox.controller.MembersController;
 import com.gym.kerabox.dto.SearchUserDto;
 import com.gym.kerabox.dto.MembersDto;
 import com.gym.kerabox.entity.AddressEntity;
-import com.gym.kerabox.entity.Employee;
 import com.gym.kerabox.entity.MembersEntity;
-import com.gym.kerabox.reposistory.EmployeeReposistory;
 import com.gym.kerabox.reposistory.MembersReposistory;
 import com.gym.kerabox.service.MembersService;
 
@@ -31,11 +29,9 @@ public class MembersServiceImpl implements MembersService {
 	@Autowired
 	MembersReposistory membersReposistory;
 
-	@Autowired
-	EmployeeReposistory employeeReposistory;
 
 	@Override
-	public MembersEntity saveUser(MembersDto userDto) {
+	public MembersEntity saveMembers(MembersDto userDto) {
 		MembersEntity userEntity = new MembersEntity();
 		AddressEntity addressEntity = new AddressEntity();
 		userEntity.setFirstname(userDto.getFirstname());
@@ -62,26 +58,14 @@ public class MembersServiceImpl implements MembersService {
 		return userEntity;
 	}
 
-	@Override
-	public void saveEmp() {
-		for (int i = 0; i < 10; i++) {
-			Employee employee = new Employee();
-			employee.setCompany("tekmindz" + i);
-			employee.setDept("CSE" + i);
-			employee.setName("Kundan" + i);
-			employee.setSalary(5000 + i);
-			employeeReposistory.save(employee);
-			System.out.println("saved emp details");
-		}
-	}
 
 	@Override
-	public List<MembersEntity> getUser() {
+	public List<MembersEntity> getMembers() {
 		return membersReposistory.findAll();
 	}
 
 	@Override
-	public List<MembersEntity> searchUser(String firstname, String mobile, String email) {
+	public List<MembersEntity> searchMembers(String firstname, String mobile, String email) {
 		List<MembersEntity> userList = null;
 		if (firstname != null && !firstname.isEmpty() || mobile != null && !mobile.isEmpty()
 				|| email != null && !email.isEmpty()) {
@@ -95,7 +79,7 @@ public class MembersServiceImpl implements MembersService {
 	}
 
 	@Override
-	public void deleteUser(long id) {
+	public void deleteMembers(long id) {
 	 	membersReposistory.deleteById(id);
 	}
 
@@ -106,7 +90,7 @@ public class MembersServiceImpl implements MembersService {
 	}
 
 	@Override
-	public MembersEntity checkedUserAlreadyExist(String mobile, String email) {
+	public MembersEntity checkedMembersAlreadyExist(String mobile, String email) {
 		// TODO Auto-generated method stub
 
 		MembersEntity checkedUser = membersReposistory.checkUserAlreadyExist(mobile, email);
@@ -114,7 +98,7 @@ public class MembersServiceImpl implements MembersService {
 	}
 
 	@Override
-	public MembersDto updateUser(MembersDto userDto) {
+	public MembersDto updateMembers(MembersDto userDto) {
 		if (userDto != null) {
 			MembersEntity userEntity = membersReposistory.findById(userDto.getId())
 					.orElseThrow(() -> new RuntimeException("User not found with id :" + userDto.getId()));

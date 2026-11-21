@@ -9,16 +9,16 @@ package com.gym.kerabox.constant;
 public class UserConstant {
 
 	public static final String GYM_KERABOX = "gym_kerabox";
-	public static final String SAVE_USER = "/saveUser";
-	public static final String UPDATE_USER = "/updateUser";
-	public static final String SEARCH_USER = "/searchUser";
-	public static final String DELETE_USER = "/deleteUser/{id}";
-	public static final String GET_ALL_USER = "/getAllUser";
+	public static final String SAVE_MEMBERS = "/saveMembers";
+	public static final String UPDATE_MEMBERS = "/updateMembers";
+	public static final String SEARCH_MEMBERS = "/searchMembers";
+	public static final String DELETE_MEMBERS = "/deleteMembers/{id}";
+	public static final String GET_ALL_MEMBERS = "/getAllMembers";
 	public static final String GET_ALL_MESSAGE_REQ = "/getAllMessageReq";
 	public static final String GET_LATEST_MESSAGE_REQ = "/getLatestMessageReq";
-	public static final String ACTIVE_USER = "/activeUser";
-	public static final String INACTIVE_USER = "/inactiveUser";
-	public static final String TOTAL_USER = "/totalUser";
-	public static final String NEW_USER = "/newUser";
+	public static final String ACTIVE_MEMBERS = "/activeMembers";
+	public static final String INACTIVE_MEMBERS = "/inactiveMembers";
+	public static final String TOTAL_MEMBERS = "/totalMembers";
+	public static final String NEW_MEMBERS = "/newMembers";
 
 }

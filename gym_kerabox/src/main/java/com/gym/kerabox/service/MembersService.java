@@ -13,19 +13,18 @@ import com.gym.kerabox.entity.MembersEntity;
 import java.util.List;
 
 public interface MembersService {
-	public MembersEntity saveUser(MembersDto userDto);
+	public MembersEntity saveMembers(MembersDto userDto);
 	
-	public void saveEmp();
 
-	public List<MembersEntity> getUser();
+	public List<MembersEntity> getMembers();
 
-	public List<MembersEntity> searchUser(String firstname,String mobile,String email);
+	public List<MembersEntity> searchMembers(String firstname,String mobile,String email);
 
-	public void deleteUser(long id);
+	public void deleteMembers(long id);
 
 	public Long getUsetCount();
 
-	public MembersEntity checkedUserAlreadyExist(String mobile, String email);
+	public MembersEntity checkedMembersAlreadyExist(String mobile, String email);
 
-	public MembersDto updateUser(MembersDto userDto);
+	public MembersDto updateMembers(MembersDto userDto);
 }

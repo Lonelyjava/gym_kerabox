@@ -58,6 +58,7 @@ public class AuthenticationController {
 	}
 
 	@PostMapping("/authenticate")
+	@Operation(summary = "authenticate user generate token")
 	public ResponseEntity<AuthenticationResponse> authenticate(
 			@RequestBody AuthenticationRequest authenticationRequest) {
 		try {
@@ -72,6 +73,7 @@ public class AuthenticationController {
 	}
 
 	@PostMapping("/refresh")
+	@Operation(summary = "refresh token")
 	public ResponseEntity<AuthenticationResponse> refresh(@RequestParam("token") String refreshToken) {
 		try {
 			AuthenticationResponse response = authenticationService.refreshToken(refreshToken);
@@ -83,6 +85,7 @@ public class AuthenticationController {
 	}
 
 	@GetMapping("/validateToken")
+	@Operation(summary = "validate token")
 	public ResponseEntity<Boolean> validateToken(@RequestParam("token") String token) {
 		try {
 			Boolean response = authenticationService.validateToken(token);
