@@ -1,17 +1,25 @@
 package com.gym.kerabox.controller;
 
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
+import com.gym.kerabox.auth.entity.User;
+import com.gym.kerabox.auth.service.AuthenticationService;
 import com.gym.kerabox.constant.UserConstant;
 import com.gym.kerabox.entity.MembersEntity;
 import com.gym.kerabox.response.ApiResponse;
@@ -28,23 +36,26 @@ public class DashboardController {
 	@Autowired
 	DashboardService dashboardService;
 
+	@Autowired
+	AuthenticationService userService;
+
 	@GetMapping(UserConstant.ACTIVE_MEMBERS)
 	@Operation(summary = "get active members details")
 	public ResponseEntity<?> getActiveMembers(@RequestParam("status") String status) {
 		ApiResponse apiResponse = new ApiResponse();
 		try {
 			List<MembersEntity> getActiveMembers = dashboardService.getActiveMembers(status);
-			if(getActiveMembers.size()>0) {
+			if (getActiveMembers.size() > 0) {
 				apiResponse.setResponseCode(200);
 				apiResponse.setCount(getActiveMembers.size());
 				apiResponse.setMessage("get active User successfully.");
 				apiResponse.setErrorMessage(false);
 				apiResponse.setData(getActiveMembers);
-			}else {
+			} else {
 				apiResponse.setResponseCode(200);
-				apiResponse.setMessage("Not found any :"+status+" -User");
+				apiResponse.setMessage("Not found any :" + status + " -User");
 			}
-			
+
 		} catch (Exception e) {
 			logger.info("Service method called using @ACTIVE_USER" + e.getMessage());
 			e.printStackTrace();
@@ -76,19 +87,19 @@ public class DashboardController {
 		ApiResponse apiResponse = new ApiResponse();
 		try {
 			List<MembersEntity> getTotalMembers = dashboardService.getAllMembers();
-			if(getTotalMembers.size()>0) {
+			if (getTotalMembers.size() > 0) {
 				apiResponse.setResponseCode(200);
 				apiResponse.setCount(getTotalMembers.size());
 				apiResponse.setMessage("get total Members successfully.");
 				apiResponse.setErrorMessage(false);
 				apiResponse.setData(getTotalMembers);
-			}else {
+			} else {
 				apiResponse.setResponseCode(200);
 				apiResponse.setCount(getTotalMembers.size());
 				apiResponse.setMessage("Not Found!");
 				apiResponse.setErrorMessage(false);
 			}
-			
+
 		} catch (Exception e) {
 			logger.info("Service method called using @TOTAL_USER" + e.getMessage());
 			e.printStackTrace();
@@ -102,13 +113,13 @@ public class DashboardController {
 		ApiResponse apiResponse = new ApiResponse();
 		try {
 			Optional<MembersEntity> getNewMembers = dashboardService.getNewMembers();
-			if(getNewMembers.isPresent()) {
+			if (getNewMembers.isPresent()) {
 				apiResponse.setResponseCode(200);
 				apiResponse.setCount(getNewMembers.get().getId());
 				apiResponse.setMessage("get new members successfully.");
 				apiResponse.setErrorMessage(false);
-				apiResponse.setData(getNewMembers);	
-			}else {
+				apiResponse.setData(getNewMembers);
+			} else {
 				apiResponse.setResponseCode(200);
 				apiResponse.setMessage("new new members added");
 				apiResponse.setErrorMessage(false);
@@ -119,6 +130,23 @@ public class DashboardController {
 			e.printStackTrace();
 		}
 		return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+	}
+
+	@GetMapping(UserConstant.GET_USERNAME)
+	@Operation(summary = "get username")
+	public Map<String, Object> getCurrentUsername(@AuthenticationPrincipal UserDetails userDetails) {
+
+		Map<String, Object> map = new HashMap<>();
+		String username = userDetails.getUsername();
+		Optional<User> userDetialsfor = userService.getUserDetails(username);
+		if (userDetialsfor.isPresent()) {
+			map.put("Eamil:", userDetails.getUsername());
+			map.put("Firstname:", userDetialsfor.get().getFirstName());
+			map.put("Lastname:", userDetialsfor.get().getLastName());
+		} else {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User details not found for username: " + username);
+		}
+		return map;
 	}
 
 }

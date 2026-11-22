@@ -97,4 +97,11 @@ public class AuthenticationService {
 		// TODO Auto-generated method stub
 		return passwordEncoder.encode(password);
 	}
+
+	public Optional<User> getUserDetails(String username) {
+		// TODO Auto-generated method stub
+		Optional<User> userDetails =userRepository.findByEmail(username);
+		
+		return userDetails;
+	}
 }
