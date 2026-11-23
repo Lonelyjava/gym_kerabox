@@ -9,3 +9,11 @@ openai.api.key=sk-proj-NQ2rxZvIR5xUK1kJ0i4CDTtXR5di63zhZxJWNqimCBrvN7LxoQk6N9Hbh
 
 
 Swagger UI : http://localhost:8889/swagger-ui/index.html#/
+
+
+<img width="1917" height="1021" alt="image" src="https://github.com/user-attachments/assets/82826251-ed27-4247-b617-a75206898bf3" />
+
+
+
+
+
