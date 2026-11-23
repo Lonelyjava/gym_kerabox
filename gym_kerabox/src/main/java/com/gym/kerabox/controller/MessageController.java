@@ -15,6 +15,8 @@ import com.gym.kerabox.entity.MessageEntity;
 import com.gym.kerabox.response.ApiResponse;
 import com.gym.kerabox.service.MessageService;
 
+import io.swagger.v3.oas.annotations.Operation;
+
 @RestController
 @RequestMapping(UserConstant.GYM_KERABOX)
 public class MessageController {
@@ -27,6 +29,7 @@ public class MessageController {
 	
 	
 	@GetMapping(UserConstant.GET_ALL_MESSAGE_REQ)
+	@Operation(summary = "Get all message requested from website")
 	public ResponseEntity<?> getAllUsersMessage() {
 		ApiResponse apiResponse = new ApiResponse();
 		try {
@@ -49,6 +52,7 @@ public class MessageController {
 		return new ResponseEntity<>(apiResponse, HttpStatus.OK);
 	}
 	@GetMapping(UserConstant.GET_LATEST_MESSAGE_REQ)
+	@Operation(summary = "Get latest message requested from website")
 	public ResponseEntity<?> getLatesUsersMessage() {
 		ApiResponse apiResponse = new ApiResponse();
 		try {
