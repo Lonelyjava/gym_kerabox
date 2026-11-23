@@ -11,6 +11,8 @@ import org.springframework.web.client.RestTemplate;
 import com.gym.kerabox.dto.ChatRequest;
 import com.gym.kerabox.dto.ChatResponse;
 
+import io.swagger.v3.oas.annotations.Operation;
+
 
 @RestController
 public class ChatController {
@@ -26,6 +28,7 @@ public class ChatController {
     private String apiUrl;
     
     @GetMapping("/openAichat")
+    @Operation(summary = "Chat with AI Agent")
     public String chat(@RequestParam String prompt) {
         // create a request
         ChatRequest request = new ChatRequest(model, prompt);

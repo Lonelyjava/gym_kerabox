@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,58 +28,59 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gym.kerabox.constant.UserConstant;
-import com.gym.kerabox.dto.UserDto;
-import com.gym.kerabox.entity.UserEntity;
+import com.gym.kerabox.dto.MembersDto;
+import com.gym.kerabox.entity.MembersEntity;
 import com.gym.kerabox.exceptionhandler.ErrorResponse;
 import com.gym.kerabox.exceptionhandler.NoSuchUserExistsException;
 import com.gym.kerabox.exceptionhandler.UserAlreadyExistsException;
 import com.gym.kerabox.response.ApiResponse;
-import com.gym.kerabox.service.UserService;
-import com.gym.kerabox.validator.UserValidator;
+import com.gym.kerabox.service.MembersService;
+import com.gym.kerabox.validator.MembersValidator;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping(UserConstant.GYM_KERABOX)
-@Tag(name = "User Controller", description = "User management APIs")
+@Tag(name = "Members Controller", description = "Members management APIs")
+@CrossOrigin()
 //@Slf4j
-public class UserController {
+public class MembersController {
 
-	private static final Logger logger = Logger.getLogger(UserController.class.getName());
+	private static final Logger logger = Logger.getLogger(MembersController.class.getName());
 
 	@Autowired
-	UserService userService;
+	MembersService membersService;
 
-	@PostMapping(UserConstant.SAVE_USER)
-	@Operation(summary = "Create new user")
-	public ResponseEntity<?> saveUserDetails(@RequestBody UserDto userDto) {
+	@PostMapping(UserConstant.SAVE_MEMBERS)
+	@Operation(summary = "Create new members")
+	public ResponseEntity<?> saveMembersDetails(@RequestBody MembersDto userDto) {
 		ApiResponse apiResponse = new ApiResponse();
 		try {
 
-			String userValidate = UserValidator.saveUserValidation(userDto);
-			if (userValidate != null) {
+			String membersValidate = MembersValidator.saveMembersValidation(userDto);
+			if (membersValidate != null) {
 				apiResponse.setResponseCode(200);
-				apiResponse.setMessage(userValidate);
+				apiResponse.setMessage(membersValidate);
 				return new ResponseEntity<>(apiResponse, HttpStatus.OK);
 			}
 
-			UserEntity checkedUser = userService.checkedUserAlreadyExist(userDto.getMobile(), userDto.getEmail());
-			if (checkedUser != null) {
+			MembersEntity checkedMembers = membersService.checkedMembersAlreadyExist(userDto.getMobile(), userDto.getEmail());
+			if (checkedMembers != null) {
 //				apiResponse.setCount(countUser);
 				apiResponse.setResponseCode(200);
 				apiResponse.setMessage("dupliate data not allowed.");
 //				apiResponse.setErrorMessage(false);
-				apiResponse.setData(new UserEntity(checkedUser.getMobile(), checkedUser.getEmail()));
+				apiResponse.setData(new MembersEntity(checkedMembers.getMobile(), checkedMembers.getEmail()));
 				return new ResponseEntity<>(apiResponse, HttpStatus.OK);
 			} else {
-				UserEntity saveUser = userService.saveUser(userDto);
-				Long countUser = userService.getUsetCount();
+				MembersEntity saveMembers = membersService.saveMembers(userDto);
+				Long countUser = membersService.getUsetCount();
 				apiResponse.setCount(countUser);
 				apiResponse.setResponseCode(200);
 				apiResponse.setMessage("Data saved successfully.");
 				apiResponse.setErrorMessage(false);
-				apiResponse.setData(saveUser);
+				apiResponse.setData(saveMembers);
 			}
 
 		} catch (Exception e) {
@@ -89,18 +91,18 @@ public class UserController {
 		return new ResponseEntity<>(apiResponse, HttpStatus.OK);
 	}
 
-	@GetMapping(UserConstant.GET_ALL_USER)
-	@Operation(summary = "Find all usres")
-	public ResponseEntity<?> getAllUsers() {
+	@GetMapping(UserConstant.GET_ALL_MEMBERS)
+	@Operation(summary = "Find all members")
+	public ResponseEntity<?> getAllMembers() {
 		ApiResponse apiResponse = new ApiResponse();
 		try {
-			List<UserEntity> getUser = userService.getUser();
-			if (getUser != null && !getUser.isEmpty()) {
+			List<MembersEntity> getMembers = membersService.getMembers();
+			if (getMembers != null && !getMembers.isEmpty()) {
 				apiResponse.setResponseCode(200);
-				apiResponse.setCount(getUser.size());
+				apiResponse.setCount(getMembers.size());
 				apiResponse.setMessage("Get All User successfully.");
 				apiResponse.setErrorMessage(false);
-				apiResponse.setData(getUser);
+				apiResponse.setData(getMembers);
 			} else {
 				apiResponse.setMessage("No Records Found .");
 				return new ResponseEntity<>(apiResponse, HttpStatus.OK);
@@ -113,17 +115,17 @@ public class UserController {
 		return new ResponseEntity<>(apiResponse, HttpStatus.OK);
 	}
 
-	@PutMapping(UserConstant.UPDATE_USER)
-	@Operation(summary = "Update user details")
-	public ResponseEntity<?> getUser(@RequestBody UserDto userDto) {
+	@PutMapping(UserConstant.UPDATE_MEMBERS)
+	@Operation(summary = "Update members details")
+	public ResponseEntity<?> updateMembers(@RequestBody MembersDto userDto) {
 		ApiResponse apiResponse = new ApiResponse();
 		try {
-			UserDto getUser = userService.updateUser(userDto);
+			MembersDto getMembers = membersService.updateMembers(userDto);
 			apiResponse.setResponseCode(200);
-			apiResponse.setCount(getUser.getId());
+			apiResponse.setCount(getMembers.getId());
 			apiResponse.setMessage("Update User successfully.");
 			apiResponse.setErrorMessage(false);
-			apiResponse.setData(getUser);
+			apiResponse.setData(getMembers);
 		} catch (Exception e) {
 			logger.info("Service method called using @UPDATE_USER" + e.getMessage());
 			e.printStackTrace();
@@ -131,21 +133,21 @@ public class UserController {
 		return new ResponseEntity<>(apiResponse, HttpStatus.OK);
 	}
 
-	@GetMapping(UserConstant.SEARCH_USER)
-	@Operation(summary = "Search user by firstname,mobile,email")
-	public ResponseEntity<?> searchUser(@RequestParam(value = "firstname", required = false) String firstname,
+	@GetMapping(UserConstant.SEARCH_MEMBERS)
+	@Operation(summary = "Search members by firstname,mobile,email")
+	public ResponseEntity<?> searchMembers(@RequestParam(value = "firstname", required = false) String firstname,
 			@RequestParam(value = "mobile", required = false) String mobile,
 			@RequestParam(value = "email", required = false) String email) {
 		ApiResponse apiResponse = new ApiResponse();
 		try {
 			if (firstname != null && !firstname.isEmpty() || mobile != null && !mobile.isEmpty()
 					|| email != null && !email.isEmpty()) {
-				List<UserEntity> getUser = userService.searchUser(firstname, mobile, email);
-				if (getUser != null && !getUser.isEmpty()) {
+				List<MembersEntity> getMembers = membersService.searchMembers(firstname, mobile, email);
+				if (getMembers != null && !getMembers.isEmpty()) {
 					apiResponse.setResponseCode(200);
 					apiResponse.setMessage("User search successfully.");
 					apiResponse.setErrorMessage(false);
-					apiResponse.setData(getUser);
+					apiResponse.setData(getMembers);
 				} else {
 					apiResponse.setMessage("No Records Found .");
 					return new ResponseEntity<>(apiResponse, HttpStatus.OK);
@@ -163,13 +165,13 @@ public class UserController {
 		return new ResponseEntity<>(apiResponse, HttpStatus.OK);
 	}
 
-	@DeleteMapping(UserConstant.DELETE_USER)
-	@Operation(summary = "Delete user by id")
-	public ResponseEntity<?> deleteUser(@PathVariable("id") long id) {
+	@DeleteMapping(UserConstant.DELETE_MEMBERS)
+	@Operation(summary = "Delete members by id")
+	public ResponseEntity<?> deleteMembers(@PathVariable("id") long id) {
 		ApiResponse apiResponse = new ApiResponse();
 		try {
 			if (id != 0) {
-				userService.deleteUser(id);
+				membersService.deleteMembers(id);
 				apiResponse.setResponseCode(200);
 				apiResponse.setMessage("User Id:" + id + " Deleted successfully.");
 				apiResponse.setErrorMessage(false);

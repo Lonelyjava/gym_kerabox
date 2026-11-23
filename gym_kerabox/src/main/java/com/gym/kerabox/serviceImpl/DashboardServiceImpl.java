@@ -3,15 +3,16 @@ package com.gym.kerabox.serviceImpl;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.gym.kerabox.dto.DashboardDto;
 import com.gym.kerabox.entity.SystemLog;
-import com.gym.kerabox.entity.UserEntity;
+import com.gym.kerabox.entity.MembersEntity;
 import com.gym.kerabox.reposistory.SystemLogRepository;
-import com.gym.kerabox.reposistory.UserReposistory;
+import com.gym.kerabox.reposistory.MembersReposistory;
 import com.gym.kerabox.service.DashboardService;
 
 
@@ -19,16 +20,16 @@ import com.gym.kerabox.service.DashboardService;
 public class DashboardServiceImpl implements DashboardService{
 
 	@Autowired
-	UserReposistory userReposistory;
+	MembersReposistory membersReposistory;
 	
 	 @Autowired
 	 private SystemLogRepository repository;
 	 
 	@Override
-	public List<UserEntity> getActiveUser(String status) {
+	public List<MembersEntity> getActiveMembers(String status) {
 		// TODO Auto-generated method stub
 		DashboardDto dashboardDto = new DashboardDto();
-		List<UserEntity> userEntity = userReposistory.findByStatus(status);
+		List<MembersEntity> userEntity = membersReposistory.findByStatus(status);
 		saveServerIp();
 		return userEntity;
 	}
@@ -47,5 +48,17 @@ public class DashboardServiceImpl implements DashboardService{
             e.printStackTrace(); 
         }
     }
+
+	@Override
+	public List<MembersEntity> getAllMembers() {
+		// TODO Auto-generated method stub
+		return membersReposistory.findAll();
+	}
+
+	@Override
+	public Optional<MembersEntity> getNewMembers() {
+		Optional<MembersEntity> topByOrderByIdDesc = membersReposistory.findTopByOrderByIdDesc();
+		return topByOrderByIdDesc;
+	}
 
 }

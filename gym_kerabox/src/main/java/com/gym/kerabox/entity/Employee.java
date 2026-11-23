@@ -1,64 +1,123 @@
 package com.gym.kerabox.entity;
-/**
- * UserController class for managing users.
- *
- * @author Kundan Kumar
- * @version 1.0
- * @since 2026-03-17
- */
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+
+
+import jakarta.persistence.*;
+import lombok.Data;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Entity
+@Table(name = "employee")
 public class Employee {
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long id;
-	private String name;
-	private long salary;
-	private String dept;
-	private String company;
 
-	public long getId() {
-		return id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "employee_id")
+    private Integer employeeId;
+
+    @Column(name = "first_name")
+    private String firstName;
+
+    @Column(name = "last_name")
+    private String lastName;
+
+    private String email;
+
+    @Column(name = "phone_number")
+    private String phoneNumber;
+
+    private String department;
+
+    private String designation;
+
+    private BigDecimal salary;
+
+    @Column(name = "joining_date")
+    private LocalDate joiningDate;
+
+    private String city;
+
+	public Integer getEmployeeId() {
+		return employeeId;
 	}
 
-	public void setId(long id) {
-		this.id = id;
+	public void setEmployeeId(Integer employeeId) {
+		this.employeeId = employeeId;
 	}
 
-	public String getName() {
-		return name;
+	public String getFirstName() {
+		return firstName;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
 	}
 
-	public long getSalary() {
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
+	public String getDepartment() {
+		return department;
+	}
+
+	public void setDepartment(String department) {
+		this.department = department;
+	}
+
+	public String getDesignation() {
+		return designation;
+	}
+
+	public void setDesignation(String designation) {
+		this.designation = designation;
+	}
+
+	public BigDecimal getSalary() {
 		return salary;
 	}
 
-	public void setSalary(long salary) {
+	public void setSalary(BigDecimal salary) {
 		this.salary = salary;
 	}
 
-	public String getDept() {
-		return dept;
+	public LocalDate getJoiningDate() {
+		return joiningDate;
 	}
 
-	public void setDept(String dept) {
-		this.dept = dept;
+	public void setJoiningDate(LocalDate joiningDate) {
+		this.joiningDate = joiningDate;
 	}
 
-	public String getCompany() {
-		return company;
+	public String getCity() {
+		return city;
 	}
 
-	public void setCompany(String company) {
-		this.company = company;
+	public void setCity(String city) {
+		this.city = city;
 	}
-
+    
+    
+    
 }
+

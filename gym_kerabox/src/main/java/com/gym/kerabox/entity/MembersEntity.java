@@ -15,8 +15,8 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name ="gym_kerabox_User")
-public class UserEntity  extends  BaseEntity{
+@Table(name ="gym_kerabox_members")
+public class MembersEntity  extends  BaseEntity{
 
 
     private String firstname;
@@ -35,12 +35,12 @@ public class UserEntity  extends  BaseEntity{
     
 
 
-    public UserEntity() {
+    public MembersEntity() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public UserEntity(String email, String mobile) {
+	public MembersEntity(String email, String mobile) {
 		super();
 		this.email = email;
 		this.mobile = mobile;

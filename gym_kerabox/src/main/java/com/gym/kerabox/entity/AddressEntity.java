@@ -25,7 +25,7 @@ public class AddressEntity extends BaseEntity{
 
     @OneToOne(mappedBy = "address")
     @JsonIgnore
-    private  UserEntity userEntity;
+    private  MembersEntity userEntity;
 
     public String getAddress1() {
         return address1;
@@ -67,11 +67,11 @@ public class AddressEntity extends BaseEntity{
         this.pincode = pincode;
     }
 
-    public UserEntity getUserEntity() {
+    public MembersEntity getUserEntity() {
         return userEntity;
     }
 
-    public void setUserEntity(UserEntity userEntity) {
+    public void setUserEntity(MembersEntity userEntity) {
         this.userEntity = userEntity;
     }
 

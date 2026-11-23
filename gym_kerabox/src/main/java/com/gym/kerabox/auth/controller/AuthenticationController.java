@@ -1,0 +1,98 @@
+package com.gym.kerabox.auth.controller;
+
+/**
+ * 
+ *
+ * @author Kundan Kumar
+ * @version 1.0
+ * @since 2026-03-17
+ */
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.gym.kerabox.auth.dto.AuthenticationRequest;
+import com.gym.kerabox.auth.dto.AuthenticationResponse;
+import com.gym.kerabox.auth.dto.RegisterRequest;
+import com.gym.kerabox.auth.service.AuthenticationService;
+import com.gym.kerabox.response.ApiResponse;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@RestController
+@RequestMapping("/api/v1/auth-service")
+@CrossOrigin()
+@Tag(name = "Auth Controller", description = "User management APIs")
+public class AuthenticationController {
+
+	private final AuthenticationService authenticationService;
+	public AuthenticationController(AuthenticationService authenticationService) {
+		this.authenticationService = authenticationService;
+	}
+	@PostMapping("/register")
+	@Operation(summary = "register new user")
+	public ResponseEntity<?> register(@RequestBody RegisterRequest registerRequest) {
+		
+		ApiResponse apiResponse = new ApiResponse();
+		try {
+			String message = authenticationService.register(registerRequest);
+			apiResponse.setMessage(message);
+			apiResponse.setCount(1);
+			apiResponse.setErrorMessage(false);
+			apiResponse.setResponseCode(200);
+			apiResponse.setData(message);
+			return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+//			return ResponseEntity.ok(message);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+	}
+
+	@PostMapping("/authenticate")
+	@Operation(summary = "authenticate user generate token")
+	public ResponseEntity<AuthenticationResponse> authenticate(
+			@RequestBody AuthenticationRequest authenticationRequest) {
+		try {
+			
+			System.out.println("authenticationRequest" +authenticationRequest.getEmail() +"---"+authenticationRequest.getPassword());
+			AuthenticationResponse response = authenticationService.authenticate(authenticationRequest);
+			return ResponseEntity.ok(response);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+	}
+
+	@PostMapping("/refresh")
+	@Operation(summary = "refresh token")
+	public ResponseEntity<AuthenticationResponse> refresh(@RequestParam("token") String refreshToken) {
+		try {
+			AuthenticationResponse response = authenticationService.refreshToken(refreshToken);
+			return ResponseEntity.ok(response);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+	}
+
+	@GetMapping("/validateToken")
+	@Operation(summary = "validate token")
+	public ResponseEntity<Boolean> validateToken(@RequestParam("token") String token) {
+		try {
+			Boolean response = authenticationService.validateToken(token);
+			return ResponseEntity.ok(response);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+	}
+}
