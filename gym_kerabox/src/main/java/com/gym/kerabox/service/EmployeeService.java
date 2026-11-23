@@ -148,4 +148,9 @@ public class EmployeeService {
 
 		return LocalDate.parse(value);
 	}
+
+	public List<Employee> getAllEmployee() {
+		// TODO Auto-generated method stub
+		return employeeRepository.findAll();
+	}
 }

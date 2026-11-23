@@ -21,5 +21,6 @@ public class UserConstant {
 	public static final String TOTAL_MEMBERS = "/totalMembers";
 	public static final String NEW_MEMBERS = "/newMembers";
 	public static final String GET_USERNAME = "/getUsername";
+	public static final String GET_ALL_EMPLOYEE = "/getAllEmployee";
 
 }
