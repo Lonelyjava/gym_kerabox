@@ -1,6 +1,5 @@
 package com.gym.kerabox.redis.controller;
 
-
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,49 +15,50 @@ import org.springframework.web.bind.annotation.RestController;
 import com.gym.kerabox.redis.entity.Customer;
 import com.gym.kerabox.redis.service.CustomerService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/customer")
+@Tag(name = "Customer Controller", description = "Redis Customer data store")
 public class CustomerController {
 
-      // Inject the CustomerService dependency into class
-    @Autowired 
-      private CustomerService service;
+	@Autowired
+	private CustomerService service;
 
-      // to insert new customer data into the Redis database.
-    @PostMapping("/save")
-    public Customer addCustomer(@RequestBody Customer customer){
+	@PostMapping("/save")
+	@Operation(summary = "Customer data saved in redis")
+	public Customer addCustomer(@RequestBody Customer customer) {
 
-        return service.addCustomer(customer);
-    }
+		return service.addCustomer(customer);
+	}
 
-      // to fetch All the customers from the Redis database
-    @GetMapping("/getAllCustomer")
-      public List<Customer> getListOfCustomers(){
-   
-        return service.getAllCustomers();
-    }
+	@GetMapping("/getAllCustomer")
+	@Operation(summary = "Getting records from Redis")
+	public List<Customer> getListOfCustomers() {
 
-      // to fetch Customer data using ID from Redis Database
-    @GetMapping("/getCustomerbyId/{id}")
-    public Customer getCustomer(@PathVariable int id){
-      
-        return service.getCustomerById(id);
-    }
+		return service.getAllCustomers();
+	}
 
-      // to update an existing customer in the Redis database using ID.
-    @PutMapping("updateCustomer/{id}")
-    public Customer
-    updateCustomer(@PathVariable int id,
-                   @RequestBody Customer newCustomer){
-      
-        return service.updateCustomerById(id, newCustomer);
-    }
+	@GetMapping("/getCustomerbyId/{id}")
+	@Operation(summary = "Getting records of customer from Redis")
+	public Customer getCustomer(@PathVariable int id) {
 
-      // to delete an existing customer from the Redis database using ID
-    @DeleteMapping("deleteCustomer/{id}")
-    public String deleteCustomer(@PathVariable int id){
-      
-        service.deleteCustomerById(id);
-        return "Customer Deleted Successfully";
-    }
+		return service.getCustomerById(id);
+	}
+
+	@PutMapping("updateCustomer/{id}")
+	@Operation(summary = "Updating records of customer in Redis ")
+	public Customer updateCustomer(@PathVariable int id, @RequestBody Customer newCustomer) {
+
+		return service.updateCustomerById(id, newCustomer);
+	}
+
+	@DeleteMapping("deleteCustomer/{id}")
+	@Operation(summary = "Deleting records of customer of Redis")
+	public String deleteCustomer(@PathVariable int id) {
+
+		service.deleteCustomerById(id);
+		return "Customer Deleted Successfully";
+	}
 }
