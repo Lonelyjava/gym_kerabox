@@ -26,6 +26,12 @@ Swagger UI : http://localhost:8889/swagger-ui/index.html#/
 
 <img width="1917" height="1025" alt="image" src="https://github.com/user-attachments/assets/8c22b6fb-31da-46a0-a7c1-066c7d007048" />
 
+List of all Customers inside Redis Database
+
+redis-cli - To open the Redis interface
+KEYS Customer:* - To get all KEYS associated with Customer
+HGETALL Customer:1 - Get Customer Data associated with id-1.
+
 
 <img width="1917" height="1016" alt="image" src="https://github.com/user-attachments/assets/c192f1da-e972-43f6-84a3-6c9abae9cab8" />
 
